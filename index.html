@@ -4,12 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TOS Self Up — Beat Yesterday</title>
-  <title>Win Tommorrow</title>
   
-  <!-- PWA Manifest Link -->
   <link rel="manifest" href="manifest.json" />
-  
-  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <style>
@@ -25,6 +21,7 @@
       --green-glow: rgba(34, 197, 94, 0.2);
       --red: #ef4444;
       --yellow: #f59e0b;
+      --purple: #a855f7;
     }
 
     * {
@@ -51,7 +48,6 @@
       gap: 18px;
     }
 
-    /* Header */
     header {
       text-align: center;
       margin-bottom: 2px;
@@ -72,7 +68,6 @@
       margin-top: 4px;
     }
 
-    /* Quote Banner */
     .quote-box {
       background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.8));
       border: 1px solid rgba(56, 189, 248, 0.2);
@@ -85,17 +80,13 @@
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
 
-    .quote-content {
-      flex: 1;
-    }
-
+    .quote-content { flex: 1; }
     .quote-text {
       font-size: 0.92rem;
       font-style: italic;
       color: #e2e8f0;
       line-height: 1.4;
     }
-
     .quote-author {
       font-size: 0.78rem;
       color: var(--accent);
@@ -104,7 +95,6 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-
     .quote-refresh-btn {
       background: rgba(56, 189, 248, 0.1);
       border: 1px solid rgba(56, 189, 248, 0.3);
@@ -119,14 +109,12 @@
       justify-content: center;
       transition: all 0.2s;
     }
-
     .quote-refresh-btn:hover {
       background: var(--accent);
       color: #0b0f19;
       transform: rotate(30deg);
     }
 
-    /* Score Comparison Card */
     .battle-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -158,10 +146,7 @@
       color: var(--accent);
       text-shadow: 0 0 20px var(--accent-glow);
     }
-    
-    .yesterday-score { 
-      color: var(--text-muted); 
-    }
+    .yesterday-score { color: var(--text-muted); }
 
     .vs-divider {
       font-weight: 900;
@@ -184,55 +169,123 @@
     .behind { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid var(--red); }
     .tied { background: rgba(245, 158, 11, 0.15); color: var(--yellow); border: 1px solid var(--yellow); }
 
-    /* Graph Card */
-    .chart-card {
+    .compare-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 14px;
       padding: 18px;
     }
 
-    .chart-header {
+    .compare-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
       margin-bottom: 14px;
     }
 
-    .chart-header h2 {
+    .compare-header h2 {
       font-size: 1.05rem;
       color: #e2e8f0;
       font-weight: 700;
     }
 
-    .chart-stat-pills {
-      display: flex;
+    .compare-selectors {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
       gap: 8px;
+      align-items: center;
+      margin-bottom: 14px;
     }
 
-    .stat-pill {
+    .compare-select {
       background: #0b0f19;
       border: 1px solid var(--card-border);
-      border-radius: 6px;
-      padding: 3px 8px;
-      font-size: 0.72rem;
-      color: var(--text-muted);
-    }
-
-    .stat-pill strong {
-      color: #e2e8f0;
-      margin-left: 2px;
-    }
-
-    .canvas-container {
-      position: relative;
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      outline: none;
       width: 100%;
-      height: 220px;
     }
 
-    /* Calendar Tracker Section */
+    .compare-select:focus { border-color: var(--accent); }
+
+    .compare-vs-pill {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      padding: 4px 6px;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .month-stat-box {
+      background: #0b0f19;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .month-stat-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .stat-row strong { color: #f8fafc; }
+
+    .ratio-bar-container {
+      background: #0b0f19;
+      border: 1px solid var(--card-border);
+      height: 12px;
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      margin-bottom: 12px;
+    }
+
+    .ratio-bar-left {
+      background: var(--accent);
+      height: 100%;
+      width: 50%;
+      transition: width 0.3s;
+    }
+
+    .ratio-bar-right {
+      background: var(--purple);
+      height: 100%;
+      width: 50%;
+      transition: width 0.3s;
+    }
+
+    .compare-verdict {
+      text-align: center;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid var(--card-border);
+      color: #e2e8f0;
+    }
+
     .calendar-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -253,11 +306,7 @@
       font-weight: 700;
     }
 
-    .cal-controls {
-      display: flex;
-      gap: 6px;
-    }
-
+    .cal-controls { display: flex; gap: 6px; }
     .cal-btn {
       background: #0b0f19;
       border: 1px solid var(--card-border);
@@ -268,10 +317,7 @@
       font-size: 0.85rem;
       font-weight: 600;
     }
-
-    .cal-btn:hover {
-      border-color: var(--accent);
-    }
+    .cal-btn:hover { border-color: var(--accent); }
 
     .calendar-grid {
       display: grid;
@@ -297,11 +343,11 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      position: relative;
       font-size: 0.85rem;
       font-weight: 600;
       color: #cbd5e1;
       cursor: pointer;
+      position: relative;
       transition: all 0.15s ease;
     }
 
@@ -316,16 +362,12 @@
       cursor: default;
     }
 
-    .cal-day.today {
-      border: 2px solid var(--accent);
-    }
-
+    .cal-day.today { border: 2px solid var(--accent); }
     .cal-day.beat {
       border-color: var(--green);
       background: rgba(34, 197, 94, 0.12);
       color: #fff;
     }
-
     .cal-day.loss {
       border-color: var(--red);
       background: rgba(239, 68, 68, 0.12);
@@ -342,6 +384,17 @@
     .cal-day.beat .score-badge { color: var(--green); }
     .cal-day.loss .score-badge { color: var(--red); }
 
+    .photo-dot {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--accent);
+    }
+
     .cal-legend {
       display: flex;
       gap: 14px;
@@ -351,19 +404,43 @@
       justify-content: flex-end;
     }
 
-    .legend-item {
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .legend-color { width: 10px; height: 10px; border-radius: 3px; }
+
+    .chart-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .chart-header {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 5px;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
     }
 
-    .legend-color {
-      width: 10px;
-      height: 10px;
-      border-radius: 3px;
+    .chart-header h2 { font-size: 1.05rem; color: #e2e8f0; font-weight: 700; }
+    .chart-stat-pills { display: flex; gap: 8px; }
+    .stat-pill {
+      background: #0b0f19;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .stat-pill strong { color: #e2e8f0; margin-left: 2px; }
+
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      height: 220px;
     }
 
-    /* Add Task Form */
     .form-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -378,12 +455,7 @@
       font-weight: 700;
     }
 
-    .task-form {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
+    .task-form { display: flex; gap: 10px; flex-wrap: wrap; }
     .task-form input[type="text"] {
       flex: 1 1 200px;
       background: #0b0f19;
@@ -394,7 +466,6 @@
       font-size: 0.95rem;
       outline: none;
     }
-
     .task-form input[type="number"] {
       width: 90px;
       background: #0b0f19;
@@ -405,11 +476,7 @@
       font-size: 0.95rem;
       outline: none;
     }
-
-    .task-form input:focus {
-      border-color: var(--accent);
-    }
-
+    .task-form input:focus { border-color: var(--accent); }
     .task-form button {
       background: var(--accent);
       color: #0b0f19;
@@ -421,13 +488,7 @@
       transition: all 0.2s;
     }
 
-    /* Task List */
-    .task-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
+    .task-list { display: flex; flex-direction: column; gap: 10px; }
     .task-item {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -440,22 +501,12 @@
       cursor: pointer;
       user-select: none;
     }
-
-    .task-item:hover {
-      border-color: #3b4e74;
-    }
-
+    .task-item:hover { border-color: #3b4e74; }
     .task-item.completed {
       border-color: var(--green);
       background: rgba(34, 197, 94, 0.06);
     }
-
-    .task-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
+    .task-left { display: flex; align-items: center; gap: 14px; }
     .task-checkbox {
       width: 22px;
       height: 22px;
@@ -466,39 +517,16 @@
       justify-content: center;
       transition: all 0.2s;
     }
-
     .task-item.completed .task-checkbox {
       background: var(--green);
       border-color: var(--green);
     }
+    .task-checkbox svg { display: none; stroke: white; stroke-width: 3; }
+    .task-item.completed .task-checkbox svg { display: block; }
+    .task-title { font-size: 0.98rem; color: #e2e8f0; font-weight: 500; }
+    .task-item.completed .task-title { text-decoration: line-through; color: var(--text-muted); }
 
-    .task-checkbox svg {
-      display: none;
-      stroke: white;
-      stroke-width: 3;
-    }
-
-    .task-item.completed .task-checkbox svg {
-      display: block;
-    }
-
-    .task-title {
-      font-size: 0.98rem;
-      color: #e2e8f0;
-      font-weight: 500;
-    }
-
-    .task-item.completed .task-title {
-      text-decoration: line-through;
-      color: var(--text-muted);
-    }
-
-    .task-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
+    .task-right { display: flex; align-items: center; gap: 12px; }
     .task-points {
       background: #0b0f19;
       border: 1px solid var(--card-border);
@@ -508,7 +536,6 @@
       font-weight: 700;
       color: var(--accent);
     }
-
     .delete-btn {
       background: none;
       border: none;
@@ -518,11 +545,7 @@
       line-height: 1;
       padding: 2px;
     }
-
-    .delete-btn:hover {
-      color: var(--red);
-    }
-
+    .delete-btn:hover { color: var(--red); }
     .empty-state {
       text-align: center;
       padding: 26px 10px;
@@ -532,14 +555,12 @@
       border-radius: 12px;
     }
 
-    /* Actions */
     .actions-card {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding-top: 4px;
     }
-
     .end-day-btn {
       background: #1e293b;
       border: 1px solid var(--card-border);
@@ -551,11 +572,7 @@
       font-size: 0.85rem;
       transition: background 0.2s;
     }
-
-    .end-day-btn:hover {
-      background: #334155;
-    }
-
+    .end-day-btn:hover { background: #334155; }
     .clear-all-btn {
       background: transparent;
       color: var(--red);
@@ -564,17 +581,119 @@
       font-size: 0.85rem;
       text-decoration: underline;
     }
+
+    /* Modal for Day Details and Photo Upload */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      max-width: 400px;
+      width: 100%;
+      padding: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h3 {
+      font-size: 1.1rem;
+      color: #fff;
+    }
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .modal-info-box {
+      background: #0b0f19;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .modal-photo-container {
+      width: 100%;
+      aspect-ratio: 1;
+      max-height: 240px;
+      background: #0b0f19;
+      border: 2px dashed var(--card-border);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .modal-photo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+    .modal-photo-placeholder {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      text-align: center;
+      padding: 10px;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .modal-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      text-align: center;
+    }
+    .modal-btn-upload {
+      background: var(--accent);
+      color: #0b0f19;
+    }
+    .modal-btn-delete {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--red);
+      border: 1px solid var(--red);
+      display: none;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
     <header>
-      <h1>Self Up</h1>
-      <p>Beat yesterday. Track every day.</p>
+      <h1>TOS Self Up</h1>
+      <p>Beat yesterday Win tommorrow. Track every day.</p>
     </header>
 
-    <!-- Motivational Quotes -->
     <section class="quote-box">
       <div class="quote-content">
         <p class="quote-text" id="quoteText">"You do not rise to the level of your goals. You fall to the level of your systems."</p>
@@ -583,26 +702,55 @@
       <button class="quote-refresh-btn" id="refreshQuoteBtn" title="Next Motivational Quote">⚡</button>
     </section>
 
-    <!-- Score Comparison Card -->
     <section class="battle-card">
       <div class="day-box">
         <div class="label">Yesterday</div>
         <div class="score yesterday-score" id="yesterdayScore">0</div>
       </div>
-
       <div class="vs-divider">VS</div>
-
       <div class="day-box">
         <div class="label">Today</div>
         <div class="score today-score" id="todayScore">0</div>
       </div>
-
       <div class="status-badge tied" id="statusMessage">
         Add tasks below and check them off to earn points!
       </div>
     </section>
 
-    <!-- Calendar Tracker Card -->
+    <section class="compare-card">
+      <div class="compare-header">
+        <h2>📊 Monthly Head-to-Head</h2>
+      </div>
+      <div class="compare-selectors">
+        <select id="compareMonthA" class="compare-select"></select>
+        <span class="compare-vs-pill">VS</span>
+        <select id="compareMonthB" class="compare-select"></select>
+      </div>
+      <div class="ratio-bar-container">
+        <div class="ratio-bar-left" id="ratioBarLeft"></div>
+        <div class="ratio-bar-right" id="ratioBarRight"></div>
+      </div>
+      <div class="compare-grid">
+        <div class="month-stat-box">
+          <div class="month-stat-title" id="labelMonthA" style="color:var(--accent)">Month A</div>
+          <div class="stat-row"><span>Total Pts:</span> <strong id="ptsMonthA">0</strong></div>
+          <div class="stat-row"><span>Days Logged:</span> <strong id="daysMonthA">0</strong></div>
+          <div class="stat-row"><span>Daily Avg:</span> <strong id="avgMonthA">0</strong></div>
+          <div class="stat-row"><span>Win Rate:</span> <strong id="winMonthA">0%</strong></div>
+        </div>
+        <div class="month-stat-box">
+          <div class="month-stat-title" id="labelMonthB" style="color:var(--purple)">Month B</div>
+          <div class="stat-row"><span>Total Pts:</span> <strong id="ptsMonthB">0</strong></div>
+          <div class="stat-row"><span>Days Logged:</span> <strong id="daysMonthB">0</strong></div>
+          <div class="stat-row"><span>Daily Avg:</span> <strong id="avgMonthB">0</strong></div>
+          <div class="stat-row"><span>Win Rate:</span> <strong id="winMonthB">0%</strong></div>
+        </div>
+      </div>
+      <div class="compare-verdict" id="compareVerdict">
+        Select two months to compare total performance.
+      </div>
+    </section>
+
     <section class="calendar-card">
       <div class="calendar-header">
         <h2 id="calendarMonthYear">Month Year</h2>
@@ -612,9 +760,7 @@
           <button class="cal-btn" id="nextMonthBtn">&gt;</button>
         </div>
       </div>
-
       <div class="calendar-grid" id="calendarGrid"></div>
-
       <div class="cal-legend">
         <div class="legend-item">
           <span class="legend-color" style="background:var(--green)"></span>
@@ -625,13 +771,12 @@
           <span>Fell Behind</span>
         </div>
         <div class="legend-item">
-          <span class="legend-color" style="border: 2px solid var(--accent)"></span>
-          <span>Today</span>
+          <span class="legend-color" style="background:var(--accent); border-radius:50%;"></span>
+          <span>Photo Logged</span>
         </div>
       </div>
     </section>
 
-    <!-- 7-Day Performance Curve -->
     <section class="chart-card">
       <div class="chart-header">
         <h2>📈 7-Day Curve</h2>
@@ -645,34 +790,17 @@
       </div>
     </section>
 
-    <!-- Add Task Form -->
     <section class="form-card">
       <h2>+ Create Daily Task</h2>
       <form class="task-form" id="taskForm">
-        <input 
-          type="text" 
-          id="taskTitle" 
-          placeholder="e.g., Exercise 30m, Study C++, Read 10 pages..." 
-          required 
-          autocomplete="off"
-        />
-        <input 
-          type="number" 
-          id="taskPoints" 
-          placeholder="Pts" 
-          value="1" 
-          min="1" 
-          max="100" 
-          required 
-        />
+        <input type="text" id="taskTitle" placeholder="e.g., Study C++, Workout 30m, Read 10 pages..." required autocomplete="off" />
+        <input type="number" id="taskPoints" placeholder="Pts" value="1" min="1" max="100" required />
         <button type="submit">Add Task</button>
       </form>
     </section>
 
-    <!-- Task List -->
     <section class="task-list" id="taskList"></section>
 
-    <!-- Bottom Actions -->
     <div class="actions-card">
       <button class="end-day-btn" id="finishDayBtn" title="Locks today's points, updates calendar & chart, and resets checkboxes">
         🌙 Close & Save Day (Set as Yesterday)
@@ -681,39 +809,86 @@
     </div>
   </div>
 
-  <!-- Toast UI for Update Notification -->
+  <!-- Day Detail / Photo Modal -->
+  <div class="modal-backdrop" id="dayModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalDateTitle">Date Details</h3>
+        <button class="modal-close-btn" id="closeModalBtn">&times;</button>
+      </div>
+
+      <div class="modal-info-box" id="modalInfoBox">
+        <!-- Injected via JS -->
+      </div>
+
+      <div class="modal-photo-container">
+        <img id="modalPhotoImg" class="modal-photo-img" alt="Daily Progress Photo" />
+        <div id="modalPhotoPlaceholder" class="modal-photo-placeholder">
+          📷 No photo logged for this date.
+        </div>
+      </div>
+
+      <input type="file" id="photoFileInput" accept="image/*" style="display:none;" />
+
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn-upload" id="uploadPhotoBtn">📸 Add / Change Photo</button>
+        <button class="modal-btn modal-btn-delete" id="deletePhotoBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+
   <div id="updateToast" style="display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#0284c7; color:#fff; padding:12px 20px; border-radius:10px; box-shadow:0 10px 25px rgba(0,0,0,0.5); z-index:9999; font-weight:600; font-size:0.9rem; align-items:center; gap:12px;">
     <span>🚀 New version available!</span>
     <button id="reloadBtn" style="background:#fff; color:#0284c7; border:none; padding:6px 14px; border-radius:6px; cursor:pointer; font-weight:700;">Update Now</button>
   </div>
 
   <script>
-    // Quotes Library
     const quotes = [
-      { text: "You do not rise to the level of your goals. You fall to the level of your systems.", author: "James Clear" },
-      { text: "Compare yourself to who you were yesterday, not to who someone else is today.", author: "Jordan Peterson" },
-      { text: "Small disciplines repeated with consistency every day lead to great achievements.", author: "John C. Maxwell" },
-      { text: "Don't count the days, make the days count.", author: "Muhammad Ali" },
-      { text: "Action isn't just the effect of motivation; it's also the cause of it.", author: "Mark Manson" },
-      { text: "The man who moves a mountain begins by carrying away small stones.", author: "Confucius" },
-      { text: "First you make your habits, and then your habits make you.", author: "John Dryden" }
-    ];
+  { text: "You do not rise to the level of your goals. You fall to the level of your systems.", author: "James Clear" },
+  { text: "Compare yourself to who you were yesterday, not to who someone else is today.", author: "Jordan Peterson" },
+  { text: "Small disciplines repeated with consistency every day lead to great achievements.", author: "John C. Maxwell" },
+  { text: "Don't count the days, make the days count.", author: "Muhammad Ali" },
+  { text: "Action isn't just the effect of motivation; it's also the cause of it.", author: "Mark Manson" },
+  { text: "The man who moves a mountain begins by carrying away small stones.", author: "Confucius" },
+  { text: "First you make your habits, and then your habits make you.", author: "John Dryden" },
+  
+  // Add your new quotes here:
+  { text: "We suffer more often in imagination than in reality.", author: "Seneca" },
+  { text: "Discipline is choosing between what you want now and what you want most.", author: "Abraham Lincoln" },
+  { text: "He who has a why to live can bear almost any how.", author: "Friedrich Nietzsche" },
+  { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+  { text: "Continuous improvement is better than delayed perfection.", author: "Mark Twain" },
+  { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+  { text: "Self-discipline begins with the mastery of your thoughts.", author: "Napoleon Hill" },
 
-    // Local Storage Keys
+  { text: "I can do all things through Christ who strengthens me.", author: "Philippians 4:13" },
+  { text: "Whatever you do, work heartily, as for the Lord and not for men.", author: "Colossians 3:23" },
+  { text: "Do you not know that in a race all the runners run, but only one gets the prize? Run in such a way as to get the prize.", author: "1 Corinthians 9:24" },
+  { text: "Commit your work to the Lord, and your plans will be established.", author: "Proverbs 16:3" },
+  { text: "No discipline seems pleasant at the time, but painful. Later on, however, it produces a harvest of righteousness and peace.", author: "Hebrews 12:11" },
+  { text: "The soul of the sluggard craves and gets nothing, while the soul of the diligent is richly supplied.", author: "Proverbs 13:4" },
+  { text: "Let us not become weary in doing good, for at the proper time we will reap a harvest if we do not give up.", author: "Galatians 6:9" },
+  { text: "For God gave us a spirit not of fear, but of power and love and self-control.", author: "2 Timothy 1:7" },
+  { text: "Whatever your hand finds to do, do it with your might.", author: "Ecclesiastes 9:10" },
+  { text: "I have fought the good fight, I have finished the race, I have kept the faith.", author: "2 Timothy 4:7" },
+  { text: "Be strong and courageous. Do not be frightened, and do not be dismayed, for the Lord your God is with you wherever you go.", author: "Joshua 1:9" },
+  { text: "A slack hand causes poverty, but the hand of the diligent makes rich.", author: "Proverbs 10:4" }
+];
+   
+
     const STORAGE_KEY_TASKS = "self_vs_self_tasks";
     const STORAGE_KEY_YESTERDAY = "self_vs_self_yesterday_score";
     const STORAGE_KEY_HISTORY = "self_vs_self_history_points";
     const STORAGE_KEY_CALENDAR = "self_vs_self_calendar_data";
 
-    // State Initialization
     let tasks = JSON.parse(localStorage.getItem(STORAGE_KEY_TASKS)) || [];
     let yesterdayScore = parseInt(localStorage.getItem(STORAGE_KEY_YESTERDAY), 10) || 0;
     let historyScores = JSON.parse(localStorage.getItem(STORAGE_KEY_HISTORY)) || [0, 0, 0, 0, 0, 0];
     let calendarRecords = JSON.parse(localStorage.getItem(STORAGE_KEY_CALENDAR)) || {};
 
     let currentCalDate = new Date();
+    let selectedModalDateKey = null;
 
-    // DOM Elements
     const quoteTextEl = document.getElementById("quoteText");
     const quoteAuthorEl = document.getElementById("quoteAuthor");
     const refreshQuoteBtn = document.getElementById("refreshQuoteBtn");
@@ -730,14 +905,39 @@
     const statAvgEl = document.getElementById("statAvg");
     const statBestEl = document.getElementById("statBest");
 
-    // Calendar Elements
     const calendarMonthYear = document.getElementById("calendarMonthYear");
     const calendarGrid = document.getElementById("calendarGrid");
     const prevMonthBtn = document.getElementById("prevMonthBtn");
     const nextMonthBtn = document.getElementById("nextMonthBtn");
     const todayMonthBtn = document.getElementById("todayMonthBtn");
 
-    // Quote Logic
+    const compareMonthA = document.getElementById("compareMonthA");
+    const compareMonthB = document.getElementById("compareMonthB");
+    const labelMonthA = document.getElementById("labelMonthA");
+    const labelMonthB = document.getElementById("labelMonthB");
+    const ptsMonthA = document.getElementById("ptsMonthA");
+    const ptsMonthB = document.getElementById("ptsMonthB");
+    const daysMonthA = document.getElementById("daysMonthA");
+    const daysMonthB = document.getElementById("daysMonthB");
+    const avgMonthA = document.getElementById("avgMonthA");
+    const avgMonthB = document.getElementById("avgMonthB");
+    const winMonthA = document.getElementById("winMonthA");
+    const winMonthB = document.getElementById("winMonthB");
+    const ratioBarLeft = document.getElementById("ratioBarLeft");
+    const ratioBarRight = document.getElementById("ratioBarRight");
+    const compareVerdict = document.getElementById("compareVerdict");
+
+    // Modal elements
+    const dayModal = document.getElementById("dayModal");
+    const modalDateTitle = document.getElementById("modalDateTitle");
+    const modalInfoBox = document.getElementById("modalInfoBox");
+    const modalPhotoImg = document.getElementById("modalPhotoImg");
+    const modalPhotoPlaceholder = document.getElementById("modalPhotoPlaceholder");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const uploadPhotoBtn = document.getElementById("uploadPhotoBtn");
+    const deletePhotoBtn = document.getElementById("deletePhotoBtn");
+    const photoFileInput = document.getElementById("photoFileInput");
+
     function setRandomQuote() {
       const random = quotes[Math.floor(Math.random() * quotes.length)];
       quoteTextEl.textContent = `"${random.text}"`;
@@ -745,7 +945,6 @@
     }
     refreshQuoteBtn.addEventListener("click", setRandomQuote);
 
-    // Helpers
     function getDateKey(d) {
       const year = d.getFullYear();
       const month = String(d.getMonth() + 1).padStart(2, "0");
@@ -758,13 +957,17 @@
     }
 
     function saveState() {
-      localStorage.setItem(STORAGE_KEY_TASKS, JSON.stringify(tasks));
-      localStorage.setItem(STORAGE_KEY_YESTERDAY, yesterdayScore.toString());
-      localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(historyScores));
-      localStorage.setItem(STORAGE_KEY_CALENDAR, JSON.stringify(calendarRecords));
+      try {
+        localStorage.setItem(STORAGE_KEY_TASKS, JSON.stringify(tasks));
+        localStorage.setItem(STORAGE_KEY_YESTERDAY, yesterdayScore.toString());
+        localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(historyScores));
+        localStorage.setItem(STORAGE_KEY_CALENDAR, JSON.stringify(calendarRecords));
+      } catch (e) {
+        alert("⚠️ Local storage quota exceeded! Consider removing old photos.");
+      }
     }
 
-    // Chart.js Setup
+    // Chart.js
     function getWeekLabels() {
       const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
       const now = new Date();
@@ -804,9 +1007,7 @@
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false }
-        },
+        plugins: { legend: { display: false } },
         scales: {
           x: { grid: { display: false }, ticks: { color: "#64748b" } },
           y: {
@@ -832,7 +1033,106 @@
       statBestEl.textContent = `${best} pts`;
     }
 
-    // Calendar Render Logic
+    // Modal & Photo Logic
+    function openDayModal(dateKey) {
+      selectedModalDateKey = dateKey;
+      modalDateTitle.textContent = `📅 ${dateKey}`;
+
+      const todayKey = getDateKey(new Date());
+      const record = calendarRecords[dateKey];
+      const isToday = dateKey === todayKey;
+
+      let score = record ? record.score : (isToday ? calculateTodayScore() : 0);
+      let target = record ? record.target : (isToday ? yesterdayScore : 0);
+      let statusText = "No activity logged";
+
+      if (record) {
+        statusText = record.status === "beat" ? "🔥 Won against target!" : "⚠️ Fell below target";
+      } else if (isToday) {
+        statusText = "⚡ In Progress Today";
+      }
+
+      modalInfoBox.innerHTML = `
+        <div><strong>Points:</strong> ${score} pts</div>
+        <div><strong>Target (Yesterday):</strong> ${target} pts</div>
+        <div><strong>Status:</strong> ${statusText}</div>
+      `;
+
+      if (record && record.photo) {
+        modalPhotoImg.src = record.photo;
+        modalPhotoImg.style.display = "block";
+        modalPhotoPlaceholder.style.display = "none";
+        deletePhotoBtn.style.display = "block";
+      } else {
+        modalPhotoImg.src = "";
+        modalPhotoImg.style.display = "none";
+        modalPhotoPlaceholder.style.display = "block";
+        deletePhotoBtn.style.display = "none";
+      }
+
+      dayModal.classList.add("open");
+    }
+
+    closeModalBtn.addEventListener("click", () => dayModal.classList.remove("open"));
+    dayModal.addEventListener("click", (e) => {
+      if (e.target === dayModal) dayModal.classList.remove("open");
+    });
+
+    uploadPhotoBtn.addEventListener("click", () => photoFileInput.click());
+
+    // In-browser compression via Canvas
+    photoFileInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const size = 320; // 320x320 thumbnail
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext("2d");
+
+          // Center crop to square
+          const minDim = Math.min(img.width, img.height);
+          const sx = (img.width - minDim) / 2;
+          const sy = (img.height - minDim) / 2;
+          ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, size, size);
+
+          // Compress to lightweight JPEG (~15-25 KB)
+          const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.6);
+
+          if (!calendarRecords[selectedModalDateKey]) {
+            calendarRecords[selectedModalDateKey] = {
+              score: 0,
+              target: 0,
+              status: "neutral"
+            };
+          }
+          calendarRecords[selectedModalDateKey].photo = compressedDataUrl;
+
+          saveState();
+          openDayModal(selectedModalDateKey);
+          renderCalendar();
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+      photoFileInput.value = "";
+    });
+
+    deletePhotoBtn.addEventListener("click", () => {
+      if (calendarRecords[selectedModalDateKey]) {
+        delete calendarRecords[selectedModalDateKey].photo;
+        saveState();
+        openDayModal(selectedModalDateKey);
+        renderCalendar();
+      }
+    });
+
+    // Calendar Render
     function renderCalendar() {
       calendarGrid.innerHTML = "";
       const year = currentCalDate.getFullYear();
@@ -868,18 +1168,16 @@
         const dayEl = document.createElement("div");
         dayEl.className = "cal-day";
 
-        if (dateKey === todayKey) {
-          dayEl.classList.add("today");
-        }
+        if (dateKey === todayKey) dayEl.classList.add("today");
 
         const record = calendarRecords[dateKey];
         if (record) {
-          if (record.status === "beat") {
-            dayEl.classList.add("beat");
-          } else if (record.status === "loss") {
-            dayEl.classList.add("loss");
-          }
+          if (record.status === "beat") dayEl.classList.add("beat");
+          else if (record.status === "loss") dayEl.classList.add("loss");
           dayEl.innerHTML = `<span>${day}</span><span class="score-badge">${record.score}p</span>`;
+          if (record.photo) {
+            dayEl.innerHTML += `<div class="photo-dot" title="Photo logged"></div>`;
+          }
         } else if (dateKey === todayKey) {
           const liveTodayScore = calculateTodayScore();
           dayEl.innerHTML = `<span>${day}</span><span class="score-badge">${liveTodayScore}p</span>`;
@@ -887,16 +1185,7 @@
           dayEl.innerHTML = `<span>${day}</span>`;
         }
 
-        dayEl.addEventListener("click", () => {
-          if (record) {
-            alert(`📅 Date: ${dateKey}\n🎯 Score: ${record.score} points\n📊 Target: ${record.target} points\nResult: ${record.status === 'beat' ? 'Won against target!' : 'Below target'}`);
-          } else if (dateKey === todayKey) {
-            alert(`📅 Today's live progress: ${calculateTodayScore()} points.`);
-          } else {
-            alert(`📅 Date: ${dateKey}\nNo score recorded for this day.`);
-          }
-        });
-
+        dayEl.addEventListener("click", () => openDayModal(dateKey));
         calendarGrid.appendChild(dayEl);
       }
     }
@@ -916,7 +1205,123 @@
       renderCalendar();
     });
 
-    // Score & Tasks
+    // Comparison Logic
+    function getMonthKey(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      return `${y}-${m}`;
+    }
+
+    function formatMonthLabel(monthKey) {
+      const [year, month] = monthKey.split("-");
+      const d = new Date(parseInt(year, 10), parseInt(month, 10) - 1, 1);
+      return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+    }
+
+    function populateMonthDropdowns() {
+      const monthsSet = new Set();
+      monthsSet.add(getMonthKey(new Date()));
+
+      Object.keys(calendarRecords).forEach((dateKey) => {
+        monthsSet.add(dateKey.substring(0, 7));
+      });
+
+      const prev = new Date();
+      prev.setMonth(prev.getMonth() - 1);
+      monthsSet.add(getMonthKey(prev));
+
+      const sortedMonths = Array.from(monthsSet).sort().reverse();
+      const currentValA = compareMonthA.value || sortedMonths[0];
+      const currentValB = compareMonthB.value || (sortedMonths[1] || sortedMonths[0]);
+
+      compareMonthA.innerHTML = "";
+      compareMonthB.innerHTML = "";
+
+      sortedMonths.forEach((mKey) => {
+        const label = formatMonthLabel(mKey);
+        compareMonthA.add(new Option(label, mKey));
+        compareMonthB.add(new Option(label, mKey));
+      });
+
+      compareMonthA.value = currentValA;
+      compareMonthB.value = currentValB;
+    }
+
+    function getMonthStats(monthKey) {
+      let totalPts = 0;
+      let daysCount = 0;
+      let wins = 0;
+
+      const todayKey = getDateKey(new Date());
+      const isCurrentMonth = monthKey === getMonthKey(new Date());
+
+      if (isCurrentMonth) {
+        totalPts += calculateTodayScore();
+        daysCount += 1;
+        if (calculateTodayScore() > yesterdayScore && yesterdayScore > 0) wins += 1;
+      }
+
+      Object.keys(calendarRecords).forEach((dateKey) => {
+        if (dateKey.startsWith(monthKey) && dateKey !== todayKey) {
+          const rec = calendarRecords[dateKey];
+          totalPts += rec.score;
+          daysCount += 1;
+          if (rec.status === "beat") wins += 1;
+        }
+      });
+
+      const avg = daysCount > 0 ? (totalPts / daysCount).toFixed(1) : 0;
+      const winRate = daysCount > 0 ? Math.round((wins / daysCount) * 100) : 0;
+      return { totalPts, daysCount, avg, winRate };
+    }
+
+    function updateMonthComparison() {
+      const keyA = compareMonthA.value;
+      const keyB = compareMonthB.value;
+      if (!keyA || !keyB) return;
+
+      labelMonthA.textContent = formatMonthLabel(keyA);
+      labelMonthB.textContent = formatMonthLabel(keyB);
+
+      const statsA = getMonthStats(keyA);
+      const statsB = getMonthStats(keyB);
+
+      ptsMonthA.textContent = `${statsA.totalPts} pts`;
+      daysMonthA.textContent = statsA.daysCount;
+      avgMonthA.textContent = `${statsA.avg} pts`;
+      winMonthA.textContent = `${statsA.winRate}%`;
+
+      ptsMonthB.textContent = `${statsB.totalPts} pts`;
+      daysMonthB.textContent = statsB.daysCount;
+      avgMonthB.textContent = `${statsB.avg} pts`;
+      winMonthB.textContent = `${statsB.winRate}%`;
+
+      const totalCombined = statsA.totalPts + statsB.totalPts;
+      if (totalCombined > 0) {
+        const pctA = Math.round((statsA.totalPts / totalCombined) * 100);
+        ratioBarLeft.style.width = `${pctA}%`;
+        ratioBarRight.style.width = `${100 - pctA}%`;
+      } else {
+        ratioBarLeft.style.width = "50%";
+        ratioBarRight.style.width = "50%";
+      }
+
+      if (keyA === keyB) {
+        compareVerdict.textContent = "Comparing the same month against itself.";
+      } else if (statsA.totalPts > statsB.totalPts) {
+        const diff = statsA.totalPts - statsB.totalPts;
+        compareVerdict.innerHTML = `🏆 <strong style="color:var(--accent)">${formatMonthLabel(keyA)}</strong> is ahead by <strong style="color:var(--green)">+${diff} points</strong>!`;
+      } else if (statsB.totalPts > statsA.totalPts) {
+        const diff = statsB.totalPts - statsA.totalPts;
+        compareVerdict.innerHTML = `🏆 <strong style="color:var(--purple)">${formatMonthLabel(keyB)}</strong> is ahead by <strong style="color:var(--green)">+${diff} points</strong>!`;
+      } else {
+        compareVerdict.textContent = "⚖️ Both months are tied in total points!";
+      }
+    }
+
+    compareMonthA.addEventListener("change", updateMonthComparison);
+    compareMonthB.addEventListener("change", updateMonthComparison);
+
     function updateComparison() {
       const todayScore = calculateTodayScore();
       todayScoreEl.textContent = todayScore;
@@ -924,6 +1329,7 @@
 
       updateChartAndStats(todayScore);
       renderCalendar();
+      updateMonthComparison();
 
       statusMessageEl.className = "status-badge";
       if (tasks.length === 0) {
@@ -948,13 +1354,8 @@
 
     function renderTasks() {
       taskList.innerHTML = "";
-
       if (tasks.length === 0) {
-        taskList.innerHTML = `
-          <div class="empty-state">
-            Your task list is empty.<br />Add daily goals above to start tracking!
-          </div>
-        `;
+        taskList.innerHTML = `<div class="empty-state">Your task list is empty.<br />Add daily goals above to start tracking!</div>`;
         updateComparison();
         return;
       }
@@ -1005,21 +1406,13 @@
       return div.innerHTML;
     }
 
-    // Add Task
     taskForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const title = taskTitleInput.value.trim();
       const points = parseInt(taskPointsInput.value, 10);
-
       if (!title || isNaN(points) || points <= 0) return;
 
-      tasks.push({
-        id: Date.now(),
-        title: title,
-        points: points,
-        completed: false
-      });
-
+      tasks.push({ id: Date.now(), title, points, completed: false });
       saveState();
       renderTasks();
 
@@ -1028,7 +1421,6 @@
       taskTitleInput.focus();
     });
 
-    // Close & Save Day (Record in Calendar)
     finishDayBtn.addEventListener("click", () => {
       const todayScore = calculateTodayScore();
       const confirmEnd = confirm(
@@ -1037,12 +1429,13 @@
 
       if (confirmEnd) {
         const todayKey = getDateKey(new Date());
-        
-        // Log into calendar history
+        const existingPhoto = calendarRecords[todayKey] ? calendarRecords[todayKey].photo : null;
+
         calendarRecords[todayKey] = {
           score: todayScore,
           target: yesterdayScore,
-          status: todayScore > yesterdayScore ? "beat" : "loss"
+          status: todayScore > yesterdayScore ? "beat" : "loss",
+          photo: existingPhoto
         };
 
         yesterdayScore = todayScore;
@@ -1052,24 +1445,24 @@
         tasks = tasks.map((t) => ({ ...t, completed: false }));
 
         saveState();
+        populateMonthDropdowns();
         renderTasks();
         setRandomQuote();
       }
     });
 
-    // Reset All Data
     resetAllBtn.addEventListener("click", () => {
-      if (confirm("Reset everything? All tasks, history points, and calendar logs will be wiped.")) {
+      if (confirm("Reset everything? All tasks, scores, calendar logs, and photos will be wiped.")) {
         tasks = [];
         yesterdayScore = 0;
         historyScores = [0, 0, 0, 0, 0, 0];
         calendarRecords = {};
         localStorage.clear();
+        populateMonthDropdowns();
         renderTasks();
       }
     });
 
-    // Service Worker Registration with Live Update Detection
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("sw.js").then((reg) => {
         reg.addEventListener("updatefound", () => {
@@ -1095,16 +1488,13 @@
       const toast = document.getElementById("updateToast");
       const reloadBtn = document.getElementById("reloadBtn");
       if (toast) toast.style.display = "flex";
-
       if (reloadBtn) {
-        reloadBtn.addEventListener("click", () => {
-          worker.postMessage({ action: "skipWaiting" });
-        });
+        reloadBtn.addEventListener("click", () => worker.postMessage({ action: "skipWaiting" }));
       }
     }
 
-    // Initialize
     setRandomQuote();
+    populateMonthDropdowns();
     renderTasks();
     renderCalendar();
   </script>
