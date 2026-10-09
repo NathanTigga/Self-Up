@@ -800,14 +800,23 @@
     </section>
 
     <section class="task-list" id="taskList"></section>
-
-    <div class="actions-card">
-      <button class="end-day-btn" id="finishDayBtn" title="Locks today's points, updates calendar & chart, and resets checkboxes">
-        🌙 Close & Save Day (Set as Yesterday)
-      </button>
-      <button class="clear-all-btn" id="resetAllBtn">Reset All Data</button>
-    </div>
+<div class="actions-card" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between; align-items:center;">
+  <button class="end-day-btn" id="finishDayBtn">
+    🌙 Close & Save Day
+  </button>
+  
+  <div style="display:flex; gap:8px;">
+    <button class="end-day-btn" id="exportDataBtn" style="background:#0284c7; border-color:#38bdf8;">
+      💾 Export Data
+    </button>
+    <button class="end-day-btn" id="importDataBtn" style="background:#334155;">
+      📥 Import Data
+    </button>
+    <input type="file" id="importFileInput" accept=".json" style="display:none;" />
   </div>
+
+  <button class="clear-all-btn" id="resetAllBtn">Reset All Data</button>
+</div>
 
   <!-- Day Detail / Photo Modal -->
   <div class="modal-backdrop" id="dayModal">
@@ -1497,6 +1506,75 @@
     populateMonthDropdowns();
     renderTasks();
     renderCalendar();
+    // --- Paste the Import / Export code here ---
+    const exportDataBtn = document.getElementById("exportDataBtn");
+    const importDataBtn = document.getElementById("importDataBtn");
+    const importFileInput = document.getElementById("importFileInput");
+
+    exportDataBtn.addEventListener("click", () => {
+      const backupData = {
+        tasks: tasks,
+        yesterdayScore: yesterdayScore,
+        historyScores: historyScores,
+        calendarRecords: calendarRecords,
+        exportedAt: new Date().toISOString()
+      };
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+      const downloadAnchor = document.createElement("a");
+      const fileName = `self-up-backup-${getDateKey(new Date())}.json`;
+      
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", fileName);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    });
+
+    importDataBtn.addEventListener("click", () => {
+      importFileInput.click();
+    });
+
+    importFileInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const importedData = JSON.parse(event.target.result);
+
+          if (importedData.tasks && importedData.calendarRecords) {
+            tasks = importedData.tasks;
+            yesterdayScore = importedData.yesterdayScore || 0;
+            historyScores = importedData.historyScores || [0, 0, 0, 0, 0, 0];
+            calendarRecords = importedData.calendarRecords;
+
+            saveState();
+            populateMonthDropdowns();
+            renderTasks();
+            renderCalendar();
+
+            alert("✅ Data successfully imported and restored!");
+          } else {
+            alert("⚠️ Invalid backup file format.");
+          }
+        } catch (err) {
+          alert("❌ Error reading backup file: " + err.message);
+        }
+      };
+      reader.readAsText(file);
+      importFileInput.value = "";
+    });
+
+    // These should stay as the last commands:
+    setRandomQuote();
+    populateMonthDropdowns();
+    renderTasks();
+    renderCalendar();
+  </script>
+</body>
+</html>
   </script>
 </body>
 </html>
