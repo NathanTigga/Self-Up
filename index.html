@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Self vs Self — Beat Yesterday</title>
+  <title>TOS Self Up — Beat Yesterday</title>
+  <title>Win Tommorrow</title>
   
   <!-- PWA Manifest Link -->
   <link rel="manifest" href="manifest.json" />
   
-  <!-- Chart.js CDN for detailed visual analytics -->
+  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <style>
@@ -24,7 +25,6 @@
       --green-glow: rgba(34, 197, 94, 0.2);
       --red: #ef4444;
       --yellow: #f59e0b;
-      --purple: #a855f7;
     }
 
     * {
@@ -184,7 +184,7 @@
     .behind { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid var(--red); }
     .tied { background: rgba(245, 158, 11, 0.15); color: var(--yellow); border: 1px solid var(--yellow); }
 
-    /* Detailed Graph Card */
+    /* Graph Card */
     .chart-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -207,7 +207,6 @@
       font-weight: 700;
     }
 
-    /* Small stat badges above chart */
     .chart-stat-pills {
       display: flex;
       gap: 8px;
@@ -230,7 +229,138 @@
     .canvas-container {
       position: relative;
       width: 100%;
-      height: 230px;
+      height: 220px;
+    }
+
+    /* Calendar Tracker Section */
+    .calendar-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .calendar-header h2 {
+      font-size: 1.05rem;
+      color: #e2e8f0;
+      font-weight: 700;
+    }
+
+    .cal-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .cal-btn {
+      background: #0b0f19;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .cal-btn:hover {
+      border-color: var(--accent);
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      text-align: center;
+    }
+
+    .cal-day-name {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      padding-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .cal-day {
+      aspect-ratio: 1;
+      background: #0b0f19;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .cal-day:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .cal-day.empty {
+      background: transparent;
+      border-color: transparent;
+      cursor: default;
+    }
+
+    .cal-day.today {
+      border: 2px solid var(--accent);
+    }
+
+    .cal-day.beat {
+      border-color: var(--green);
+      background: rgba(34, 197, 94, 0.12);
+      color: #fff;
+    }
+
+    .cal-day.loss {
+      border-color: var(--red);
+      background: rgba(239, 68, 68, 0.12);
+      color: #fff;
+    }
+
+    .cal-day .score-badge {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+      font-weight: 700;
+    }
+
+    .cal-day.beat .score-badge { color: var(--green); }
+    .cal-day.loss .score-badge { color: var(--red); }
+
+    .cal-legend {
+      display: flex;
+      gap: 14px;
+      margin-top: 14px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      justify-content: flex-end;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .legend-color {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
     }
 
     /* Add Task Form */
@@ -289,11 +419,6 @@
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s;
-    }
-
-    .task-form button:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
     }
 
     /* Task List */
@@ -445,12 +570,11 @@
 
   <div class="container">
     <header>
-      <h1>TOS SELF UP</h1>
-      <p>Your only opponent is who you were yesterday.</p>
-      <p>You are your own enemy so you have to fight for yourself.</p>
+      <h1>Self Up</h1>
+      <p>Beat yesterday. Track every day.</p>
     </header>
 
-    <!-- Motivational Quotes Section -->
+    <!-- Motivational Quotes -->
     <section class="quote-box">
       <div class="quote-content">
         <p class="quote-text" id="quoteText">"You do not rise to the level of your goals. You fall to the level of your systems."</p>
@@ -478,10 +602,39 @@
       </div>
     </section>
 
-    <!-- Detailed Progress Graph -->
+    <!-- Calendar Tracker Card -->
+    <section class="calendar-card">
+      <div class="calendar-header">
+        <h2 id="calendarMonthYear">Month Year</h2>
+        <div class="cal-controls">
+          <button class="cal-btn" id="prevMonthBtn">&lt;</button>
+          <button class="cal-btn" id="todayMonthBtn">Today</button>
+          <button class="cal-btn" id="nextMonthBtn">&gt;</button>
+        </div>
+      </div>
+
+      <div class="calendar-grid" id="calendarGrid"></div>
+
+      <div class="cal-legend">
+        <div class="legend-item">
+          <span class="legend-color" style="background:var(--green)"></span>
+          <span>Beat Target</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background:var(--red)"></span>
+          <span>Fell Behind</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="border: 2px solid var(--accent)"></span>
+          <span>Today</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7-Day Performance Curve -->
     <section class="chart-card">
       <div class="chart-header">
-        <h2>📈 7-Day Performance Curve</h2>
+        <h2>📈 7-Day Curve</h2>
         <div class="chart-stat-pills">
           <span class="stat-pill">Avg: <strong id="statAvg">0 pts</strong></span>
           <span class="stat-pill">Best: <strong id="statBest">0 pts</strong></span>
@@ -492,21 +645,21 @@
       </div>
     </section>
 
-    <!-- Create Custom Task Form -->
+    <!-- Add Task Form -->
     <section class="form-card">
-      <h2>+ Create a Daily Task</h2>
+      <h2>+ Create Daily Task</h2>
       <form class="task-form" id="taskForm">
         <input 
           type="text" 
           id="taskTitle" 
-          placeholder="e.g., Exercise 30m, Code DSA, Read 10 pages..." 
+          placeholder="e.g., Exercise 30m, Study C++, Read 10 pages..." 
           required 
           autocomplete="off"
         />
         <input 
           type="number" 
           id="taskPoints" 
-          placeholder="Points" 
+          placeholder="Pts" 
           value="1" 
           min="1" 
           max="100" 
@@ -519,48 +672,52 @@
     <!-- Task List -->
     <section class="task-list" id="taskList"></section>
 
-    <!-- Footer Actions -->
+    <!-- Bottom Actions -->
     <div class="actions-card">
-      <button class="end-day-btn" id="finishDayBtn" title="Locks today's points, updates the chart, and resets checkboxes for tomorrow">
+      <button class="end-day-btn" id="finishDayBtn" title="Locks today's points, updates calendar & chart, and resets checkboxes">
         🌙 Close & Save Day (Set as Yesterday)
       </button>
       <button class="clear-all-btn" id="resetAllBtn">Reset All Data</button>
     </div>
   </div>
 
+  <!-- Toast UI for Update Notification -->
+  <div id="updateToast" style="display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#0284c7; color:#fff; padding:12px 20px; border-radius:10px; box-shadow:0 10px 25px rgba(0,0,0,0.5); z-index:9999; font-weight:600; font-size:0.9rem; align-items:center; gap:12px;">
+    <span>🚀 New version available!</span>
+    <button id="reloadBtn" style="background:#fff; color:#0284c7; border:none; padding:6px 14px; border-radius:6px; cursor:pointer; font-weight:700;">Update Now</button>
+  </div>
+
   <script>
-    // --- Motivational Quotes Library ---
+    // Quotes Library
     const quotes = [
       { text: "You do not rise to the level of your goals. You fall to the level of your systems.", author: "James Clear" },
       { text: "Compare yourself to who you were yesterday, not to who someone else is today.", author: "Jordan Peterson" },
-      { text: "We don't rise to the level of our expectations, we fall to the level of our training.", author: "Archilochus" },
       { text: "Small disciplines repeated with consistency every day lead to great achievements.", author: "John C. Maxwell" },
       { text: "Don't count the days, make the days count.", author: "Muhammad Ali" },
       { text: "Action isn't just the effect of motivation; it's also the cause of it.", author: "Mark Manson" },
       { text: "The man who moves a mountain begins by carrying away small stones.", author: "Confucius" },
-      { text: "It's not about being the best. It's about being better than you were yesterday.", author: "Unknown" },
       { text: "First you make your habits, and then your habits make you.", author: "John Dryden" }
     ];
 
-    // --- Local Storage Keys ---
+    // Local Storage Keys
     const STORAGE_KEY_TASKS = "self_vs_self_tasks";
     const STORAGE_KEY_YESTERDAY = "self_vs_self_yesterday_score";
     const STORAGE_KEY_HISTORY = "self_vs_self_history_points";
+    const STORAGE_KEY_CALENDAR = "self_vs_self_calendar_data";
 
-    // --- State Initialization ---
+    // State Initialization
     let tasks = JSON.parse(localStorage.getItem(STORAGE_KEY_TASKS)) || [];
     let yesterdayScore = parseInt(localStorage.getItem(STORAGE_KEY_YESTERDAY), 10) || 0;
-    
-    // Store daily history (6 past days)
     let historyScores = JSON.parse(localStorage.getItem(STORAGE_KEY_HISTORY)) || [0, 0, 0, 0, 0, 0];
-    while (historyScores.length < 6) historyScores.unshift(0);
-    if (historyScores.length > 6) historyScores = historyScores.slice(-6);
+    let calendarRecords = JSON.parse(localStorage.getItem(STORAGE_KEY_CALENDAR)) || {};
 
-    // --- DOM Elements ---
+    let currentCalDate = new Date();
+
+    // DOM Elements
     const quoteTextEl = document.getElementById("quoteText");
     const quoteAuthorEl = document.getElementById("quoteAuthor");
     const refreshQuoteBtn = document.getElementById("refreshQuoteBtn");
-    
+
     const taskForm = document.getElementById("taskForm");
     const taskTitleInput = document.getElementById("taskTitle");
     const taskPointsInput = document.getElementById("taskPoints");
@@ -573,21 +730,45 @@
     const statAvgEl = document.getElementById("statAvg");
     const statBestEl = document.getElementById("statBest");
 
-    // --- Quote Logic ---
+    // Calendar Elements
+    const calendarMonthYear = document.getElementById("calendarMonthYear");
+    const calendarGrid = document.getElementById("calendarGrid");
+    const prevMonthBtn = document.getElementById("prevMonthBtn");
+    const nextMonthBtn = document.getElementById("nextMonthBtn");
+    const todayMonthBtn = document.getElementById("todayMonthBtn");
+
+    // Quote Logic
     function setRandomQuote() {
       const random = quotes[Math.floor(Math.random() * quotes.length)];
       quoteTextEl.textContent = `"${random.text}"`;
       quoteAuthorEl.textContent = `— ${random.author}`;
     }
-
     refreshQuoteBtn.addEventListener("click", setRandomQuote);
 
-    // --- Generate Dynamic Day Labels (e.g. Day -5, -4... Yesterday, Today) ---
+    // Helpers
+    function getDateKey(d) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function calculateTodayScore() {
+      return tasks.reduce((sum, task) => task.completed ? sum + task.points : sum, 0);
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY_TASKS, JSON.stringify(tasks));
+      localStorage.setItem(STORAGE_KEY_YESTERDAY, yesterdayScore.toString());
+      localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(historyScores));
+      localStorage.setItem(STORAGE_KEY_CALENDAR, JSON.stringify(calendarRecords));
+    }
+
+    // Chart.js Setup
     function getWeekLabels() {
       const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
       const now = new Date();
       const labels = [];
-      
       for (let i = 6; i >= 1; i--) {
         const d = new Date();
         d.setDate(now.getDate() - i);
@@ -597,10 +778,8 @@
       return labels;
     }
 
-    // --- Chart.js Setup ---
     const ctx = document.getElementById("progressChart").getContext("2d");
-    
-    const gradientFill = ctx.createLinearGradient(0, 0, 0, 220);
+    const gradientFill = ctx.createLinearGradient(0, 0, 0, 200);
     gradientFill.addColorStop(0, "rgba(56, 189, 248, 0.45)");
     gradientFill.addColorStop(1, "rgba(56, 189, 248, 0.0)");
 
@@ -608,77 +787,43 @@
       type: "line",
       data: {
         labels: getWeekLabels(),
-        datasets: [
-          {
-            label: "Points Earned",
-            data: [...historyScores, 0],
-            borderColor: "#38bdf8",
-            backgroundColor: gradientFill,
-            borderWidth: 3,
-            tension: 0.35,
-            fill: true,
-            pointBackgroundColor: "#38bdf8",
-            pointBorderColor: "#0b0f19",
-            pointBorderWidth: 2,
-            pointRadius: 5,
-            pointHoverRadius: 8
-          }
-        ]
+        datasets: [{
+          label: "Points Earned",
+          data: [...historyScores, 0],
+          borderColor: "#38bdf8",
+          backgroundColor: gradientFill,
+          borderWidth: 3,
+          tension: 0.35,
+          fill: true,
+          pointBackgroundColor: "#38bdf8",
+          pointBorderColor: "#0b0f19",
+          pointBorderWidth: 2,
+          pointRadius: 5
+        }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { display: false },
-          tooltip: {
-            backgroundColor: "#151d2f",
-            titleColor: "#8e9fb5",
-            bodyColor: "#f8fafc",
-            borderColor: "#22304d",
-            borderWidth: 1,
-            padding: 10,
-            displayColors: false,
-            callbacks: {
-              label: (context) => `${context.parsed.y} Points`
-            }
-          }
+          legend: { display: false }
         },
         scales: {
-          x: {
-            grid: { display: false },
-            ticks: { color: "#64748b", font: { size: 11, weight: "600" } }
-          },
+          x: { grid: { display: false }, ticks: { color: "#64748b" } },
           y: {
             beginAtZero: true,
             suggestedMax: 8,
             grid: { color: "rgba(34, 48, 77, 0.7)" },
-            ticks: {
-              color: "#64748b",
-              stepSize: 2,
-              font: { size: 11 }
-            }
+            ticks: { color: "#64748b", stepSize: 2 }
           }
         }
       }
     });
-
-    // --- Storage & Calculation ---
-    function saveTasks() {
-      localStorage.setItem(STORAGE_KEY_TASKS, JSON.stringify(tasks));
-      localStorage.setItem(STORAGE_KEY_YESTERDAY, yesterdayScore.toString());
-      localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(historyScores));
-    }
-
-    function calculateTodayScore() {
-      return tasks.reduce((sum, task) => task.completed ? sum + task.points : sum, 0);
-    }
 
     function updateChartAndStats(todayScore) {
       const fullWeek = [...historyScores, todayScore];
       progressChart.data.datasets[0].data = fullWeek;
       progressChart.update();
 
-      // Compute Average & Personal Best
       const sum = fullWeek.reduce((a, b) => a + b, 0);
       const avg = (sum / fullWeek.length).toFixed(1);
       const best = Math.max(...fullWeek);
@@ -687,17 +832,102 @@
       statBestEl.textContent = `${best} pts`;
     }
 
+    // Calendar Render Logic
+    function renderCalendar() {
+      calendarGrid.innerHTML = "";
+      const year = currentCalDate.getFullYear();
+      const month = currentCalDate.getMonth();
+
+      const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+      ];
+      calendarMonthYear.textContent = `${monthNames[month]} ${year}`;
+
+      const dayNames = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+      dayNames.forEach(d => {
+        const headerEl = document.createElement("div");
+        headerEl.className = "cal-day-name";
+        headerEl.textContent = d;
+        calendarGrid.appendChild(headerEl);
+      });
+
+      const firstDayIndex = new Date(year, month, 1).getDay();
+      const totalDays = new Date(year, month + 1, 0).getDate();
+      const todayKey = getDateKey(new Date());
+
+      for (let i = 0; i < firstDayIndex; i++) {
+        const emptyCell = document.createElement("div");
+        emptyCell.className = "cal-day empty";
+        calendarGrid.appendChild(emptyCell);
+      }
+
+      for (let day = 1; day <= totalDays; day++) {
+        const cellDate = new Date(year, month, day);
+        const dateKey = getDateKey(cellDate);
+        const dayEl = document.createElement("div");
+        dayEl.className = "cal-day";
+
+        if (dateKey === todayKey) {
+          dayEl.classList.add("today");
+        }
+
+        const record = calendarRecords[dateKey];
+        if (record) {
+          if (record.status === "beat") {
+            dayEl.classList.add("beat");
+          } else if (record.status === "loss") {
+            dayEl.classList.add("loss");
+          }
+          dayEl.innerHTML = `<span>${day}</span><span class="score-badge">${record.score}p</span>`;
+        } else if (dateKey === todayKey) {
+          const liveTodayScore = calculateTodayScore();
+          dayEl.innerHTML = `<span>${day}</span><span class="score-badge">${liveTodayScore}p</span>`;
+        } else {
+          dayEl.innerHTML = `<span>${day}</span>`;
+        }
+
+        dayEl.addEventListener("click", () => {
+          if (record) {
+            alert(`📅 Date: ${dateKey}\n🎯 Score: ${record.score} points\n📊 Target: ${record.target} points\nResult: ${record.status === 'beat' ? 'Won against target!' : 'Below target'}`);
+          } else if (dateKey === todayKey) {
+            alert(`📅 Today's live progress: ${calculateTodayScore()} points.`);
+          } else {
+            alert(`📅 Date: ${dateKey}\nNo score recorded for this day.`);
+          }
+        });
+
+        calendarGrid.appendChild(dayEl);
+      }
+    }
+
+    prevMonthBtn.addEventListener("click", () => {
+      currentCalDate.setMonth(currentCalDate.getMonth() - 1);
+      renderCalendar();
+    });
+
+    nextMonthBtn.addEventListener("click", () => {
+      currentCalDate.setMonth(currentCalDate.getMonth() + 1);
+      renderCalendar();
+    });
+
+    todayMonthBtn.addEventListener("click", () => {
+      currentCalDate = new Date();
+      renderCalendar();
+    });
+
+    // Score & Tasks
     function updateComparison() {
       const todayScore = calculateTodayScore();
       todayScoreEl.textContent = todayScore;
       yesterdayScoreEl.textContent = yesterdayScore;
 
       updateChartAndStats(todayScore);
+      renderCalendar();
 
-      // Status Badge Logic
       statusMessageEl.className = "status-badge";
       if (tasks.length === 0) {
-        statusMessageEl.textContent = "Create tasks above to start competing with yourself!";
+        statusMessageEl.textContent = "Create tasks below to start competing with yourself!";
         statusMessageEl.classList.add("tied");
       } else if (todayScore > yesterdayScore) {
         const diff = todayScore - yesterdayScore;
@@ -708,10 +938,10 @@
         statusMessageEl.classList.add("tied");
       } else if (yesterdayScore > 0) {
         const diff = yesterdayScore - todayScore;
-        statusMessageEl.textContent = `🎯 ${diff} point(s) needed to beat yesterday! Keep pushing!`;
+        statusMessageEl.textContent = `🎯 ${diff} point(s) needed to beat yesterday!`;
         statusMessageEl.classList.add("behind");
       } else {
-        statusMessageEl.textContent = `⚡ Complete your tasks to set today's benchmark!`;
+        statusMessageEl.textContent = `⚡ Complete tasks to set today's score!`;
         statusMessageEl.classList.add("tied");
       }
     }
@@ -722,8 +952,7 @@
       if (tasks.length === 0) {
         taskList.innerHTML = `
           <div class="empty-state">
-            Your task list is completely empty.<br />
-            Add your daily goals above to start tracking!
+            Your task list is empty.<br />Add daily goals above to start tracking!
           </div>
         `;
         updateComparison();
@@ -752,7 +981,7 @@
         taskEl.addEventListener("click", (e) => {
           if (e.target.closest(".delete-btn")) return;
           task.completed = !task.completed;
-          saveTasks();
+          saveState();
           renderTasks();
         });
 
@@ -760,7 +989,7 @@
         deleteBtn.addEventListener("click", (e) => {
           e.stopPropagation();
           tasks = tasks.filter((t) => t.id !== task.id);
-          saveTasks();
+          saveState();
           renderTasks();
         });
 
@@ -776,7 +1005,7 @@
       return div.innerHTML;
     }
 
-    // Add Task Handler
+    // Add Task
     taskForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const title = taskTitleInput.value.trim();
@@ -791,7 +1020,7 @@
         completed: false
       });
 
-      saveTasks();
+      saveState();
       renderTasks();
 
       taskTitleInput.value = "";
@@ -799,21 +1028,30 @@
       taskTitleInput.focus();
     });
 
-    // Close & Save Day (Shift today into history and yesterday)
+    // Close & Save Day (Record in Calendar)
     finishDayBtn.addEventListener("click", () => {
       const todayScore = calculateTodayScore();
       const confirmEnd = confirm(
-        `Close today with ${todayScore} points?\n\nThis pushes today's score to the progress graph, sets it as tomorrow's target, and resets checkboxes.`
+        `Close today with ${todayScore} points?\n\nThis logs today's score into your calendar, advances the curve, and unchecks tasks for tomorrow.`
       );
 
       if (confirmEnd) {
+        const todayKey = getDateKey(new Date());
+        
+        // Log into calendar history
+        calendarRecords[todayKey] = {
+          score: todayScore,
+          target: yesterdayScore,
+          status: todayScore > yesterdayScore ? "beat" : "loss"
+        };
+
         yesterdayScore = todayScore;
         historyScores.push(todayScore);
         if (historyScores.length > 6) historyScores.shift();
 
         tasks = tasks.map((t) => ({ ...t, completed: false }));
 
-        saveTasks();
+        saveState();
         renderTasks();
         setRandomQuote();
       }
@@ -821,57 +1059,54 @@
 
     // Reset All Data
     resetAllBtn.addEventListener("click", () => {
-      if (confirm("Reset everything? All tasks, history points, and targets will be wiped.")) {
+      if (confirm("Reset everything? All tasks, history points, and calendar logs will be wiped.")) {
         tasks = [];
         yesterdayScore = 0;
         historyScores = [0, 0, 0, 0, 0, 0];
+        calendarRecords = {};
         localStorage.clear();
         renderTasks();
       }
     });
 
-// Smart Service Worker Registration with Live Update Detection
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js").then((reg) => {
-    reg.addEventListener("updatefound", () => {
-      const newWorker = reg.installing;
-      newWorker.addEventListener("statechange", () => {
-        if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-          showUpdateToast(newWorker);
+    // Service Worker Registration with Live Update Detection
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js").then((reg) => {
+        reg.addEventListener("updatefound", () => {
+          const newWorker = reg.installing;
+          newWorker.addEventListener("statechange", () => {
+            if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+              showUpdateToast(newWorker);
+            }
+          });
+        });
+      });
+
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
         }
       });
-    });
-  });
-
-  let refreshing = false;
-  navigator.serviceWorker.addEventListener("controllerchange", () => {
-    if (!refreshing) {
-      refreshing = true;
-      window.location.reload();
     }
-  });
-}
 
-function showUpdateToast(worker) {
-  const toast = document.getElementById("updateToast");
-  const reloadBtn = document.getElementById("reloadBtn");
-  if (toast) toast.style.display = "flex";
+    function showUpdateToast(worker) {
+      const toast = document.getElementById("updateToast");
+      const reloadBtn = document.getElementById("reloadBtn");
+      if (toast) toast.style.display = "flex";
 
-  if (reloadBtn) {
-    reloadBtn.addEventListener("click", () => {
-      worker.postMessage({ action: "skipWaiting" });
-    });
-  }
-}
+      if (reloadBtn) {
+        reloadBtn.addEventListener("click", () => {
+          worker.postMessage({ action: "skipWaiting" });
+        });
+      }
+    }
 
     // Initialize
     setRandomQuote();
     renderTasks();
+    renderCalendar();
   </script>
-  <!-- Toast UI for Update Notification -->
-<div id="updateToast" style="display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#0284c7; color:#fff; padding:12px 20px; border-radius:10px; box-shadow:0 10px 25px rgba(0,0,0,0.5); z-index:9999; font-weight:600; font-size:0.9rem; align-items:center; gap:12px;">
-  <span>🚀 New version available!</span>
-  <button id="reloadBtn" style="background:#fff; color:#0284c7; border:none; padding:6px 14px; border-radius:6px; cursor:pointer; font-weight:700;">Update Now</button>
-</div>
 </body>
 </html>
