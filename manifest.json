@@ -1,6 +1,6 @@
 {
   "name": "TOS Self Up",
-  "short_name": "SelfVSelf",
+  "short_name": "TOS Self Up",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
