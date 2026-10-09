@@ -1019,12 +1019,16 @@
         plugins: { legend: { display: false } },
         scales: {
           x: { grid: { display: false }, ticks: { color: "#64748b" } },
-          y: {
-            beginAtZero: true,
-            suggestedMax: 8,
-            grid: { color: "rgba(34, 48, 77, 0.7)" },
-            ticks: { color: "#64748b", stepSize: 2 }
-          }
+       y: {
+  beginAtZero: true,
+  // Remove suggestedMax so it auto-fits your current progress
+  grace: "15%", // Adds breathing room above the highest point
+  grid: { color: "rgba(34, 48, 77, 0.7)" },
+  ticks: { 
+    color: "#64748b", 
+    precision: 0 // Only show whole numbers (1, 2, 3...)
+  }
+}
         }
       }
     });
