@@ -1,5 +1,5 @@
 // --- UPDATE THIS VERSION NUMBER WHENEVER YOU CHANGE YOUR CODE ---
-const CACHE_NAME = "self-vs-self-v4.3";
+const CACHE_NAME = "self-vs-self-v4.4";
 
 const ASSETS = [
   "./",
