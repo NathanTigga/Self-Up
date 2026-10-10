@@ -1094,7 +1094,7 @@
 }
 }
 /* Responsive mobile adjustments */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .app-header {
     flex-direction: column !important;
     align-items: flex-start !important;
@@ -1108,34 +1108,32 @@
     gap: 12px !important;
   }
 
-  .header-logo {
-    height: 44px !important;
-  }
-
   .user-greeting {
-    font-size: 1.2rem !important;
+    font-size: 1.25rem !important;
     white-space: nowrap !important;
   }
 
   .brand-subtitle {
-    font-size: 0.74rem !important;
+    font-size: 0.75rem !important;
+    white-space: normal !important;
     line-height: 1.25 !important;
   }
 
-.header-controls {
+  .header-controls {
     width: 100% !important;
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    gap: 8px !important;
     margin-left: 0 !important;
   }
 
   .header-badge {
+    display: inline-flex !important;
     font-size: 0.8rem !important;
     padding: 4px 10px !important;
     white-space: nowrap !important;
   }
+}
 
   .header-clock {
     font-size: 0.95rem;
