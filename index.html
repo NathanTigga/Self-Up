@@ -1095,43 +1095,77 @@
 }
 /* Responsive mobile adjustments */
 @media (max-width: 768px) {
+  /* Force the header into 2 vertical rows */
   .app-header {
+    display: flex !important;
     flex-direction: column !important;
     align-items: flex-start !important;
-    gap: 12px !important;
+    gap: 14px !important;
+    padding: 16px !important;
   }
 
+  /* Row 1: Logo and text stretch across */
   .brand-group {
-    width: 100% !important;
     display: flex !important;
+    flex-direction: row !important;
     align-items: center !important;
     gap: 12px !important;
+    width: 100% !important;
+  }
+
+  .header-logo {
+    height: 46px !important;
+    width: auto !important;
+    flex-shrink: 0 !important;
+  }
+
+  .brand-text-col {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
   }
 
   .user-greeting {
     font-size: 1.25rem !important;
     white-space: nowrap !important;
+    line-height: 1.2 !important;
   }
 
   .brand-subtitle {
-    font-size: 0.75rem !important;
+    font-size: 0.74rem !important;
+    line-height: 1.3 !important;
     white-space: normal !important;
-    line-height: 1.25 !important;
   }
 
+  /* Row 2: Clock, music, and date stretch across the full width */
   .header-controls {
-    width: 100% !important;
     display: flex !important;
+    flex-direction: row !important;
     justify-content: space-between !important;
     align-items: center !important;
+    width: 100% !important;
+    gap: 8px !important;
     margin-left: 0 !important;
+    padding-top: 8px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .header-clock {
+    font-size: 0.85rem !important;
+    padding: 6px 10px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .sound-btn {
+    flex-shrink: 0 !important;
   }
 
   .header-badge {
     display: inline-flex !important;
-    font-size: 0.8rem !important;
-    padding: 4px 10px !important;
+    font-size: 0.78rem !important;
+    padding: 6px 10px !important;
     white-space: nowrap !important;
+    flex-shrink: 0 !important;
   }
 }
 
@@ -1152,7 +1186,7 @@
   object-fit: contain;
   filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.35));
 }
-}
+
   </style>
 </head>
 <body>
