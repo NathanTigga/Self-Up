@@ -1095,11 +1095,12 @@
 }
 /* Responsive mobile adjustments */
 @media (max-width: 768px) {
+  /* Mobile only: Stack date directly below the clock */
   .clock-date-group {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    gap: 2px !important;
+    gap: 3px !important;
   }
 
   .header-clock {
@@ -1109,17 +1110,18 @@
   }
 
   .header-badge {
-    display: block !important;
-    font-size: 0.72rem !important;
+    display: inline-block !important;
+    font-size: 0.70rem !important;
     padding: 2px 6px !important;
     line-height: 1.1 !important;
     white-space: nowrap !important;
   }
+}
 
   .sound-btn {
     flex-shrink: 0 !important;
   }
-}
+
 
 
   .brand-title-wrap {
