@@ -2531,13 +2531,68 @@ function update() {
   update();
   setInterval(update, 1000);
 }
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').then((registration) => {
+    registration.onupdatefound = () => {
+      const newWorker = registration.installing;
+      if (!newWorker) return;
 
+      newWorker.onstatechange = () => {
+        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          const toast = document.getElementById('pwaUpdateToast');
+          const reloadBtn = document.getElementById('pwaReloadBtn');
+          if (toast && reloadBtn) {
+            toast.style.display = 'flex';
+            reloadBtn.onclick = () => {
+              newWorker.postMessage({ type: 'SKIP_WAITING' });
+            };
+          }
+        }
+      };
+    };
+  });
+
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    window.location.reload();
+  });
+}
     window.onload = init;
   </script>
   <audio id="bgMusic" loop preload="auto">
   <!-- Replace with your local audio file (e.g., music.mp3) or a hosted link -->
   <source src="music.mp3" type="audio/mpeg" />
 </audio>
+<!-- PWA UPDATE TOAST -->
+<div id="pwaUpdateToast" style="
+  display: none;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid #38bdf8;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 12px 18px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  z-index: 99999;
+  font-family: inherit;
+  color: #f8fafc;
+  align-items: center;
+  gap: 12px;
+">
+  <span style="font-size: 0.88rem;">✨ New update available!</span>
+  <button id="pwaReloadBtn" style="
+    background: #38bdf8;
+    color: #0f172a;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+  ">Refresh</button>
+</div>
 </body>
 </html>
 

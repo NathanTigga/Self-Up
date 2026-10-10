@@ -1,5 +1,5 @@
 // --- UPDATE THIS VERSION NUMBER WHENEVER YOU CHANGE YOUR CODE ---
-const CACHE_NAME = "self-vs-self-v5.15";
+const CACHE_NAME = "self-vs-self-v5.20";
 
 const ASSETS = [
   "./",
@@ -52,8 +52,11 @@ self.addEventListener("fetch", (e) => {
 });
 
 // 4. Listen for user prompt to update immediately
-self.addEventListener("message", (e) => {
-  if (e.data && e.data.action === "skipWaiting") {
+self.addEventListener('message', (event) => {
+  if (
+    (event.data && event.data.action === 'skipWaiting') ||
+    (event.data && event.data.type === 'SKIP_WAITING')
+  ) {
     self.skipWaiting();
   }
 });
