@@ -1093,50 +1093,119 @@
   display: inline-block;
 }
 }
-/* Responsive mobile adjustments */
-@media (max-width: 768px) {
-  /* Mobile only: Stack date directly below the clock */
-  .clock-date-group {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 3px !important;
-  }
-
-  .header-clock {
-    font-size: 0.85rem !important;
-    padding: 3px 8px !important;
-    white-space: nowrap !important;
-  }
-
-  .header-badge {
-    display: inline-block !important;
-    font-size: 0.70rem !important;
-    padding: 2px 6px !important;
-    line-height: 1.1 !important;
-    white-space: nowrap !important;
-  }
+/* =========================================================
+   DESKTOP DEFAULT RULES (Laptop / PC)
+   ========================================================= */
+.app-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
-  .sound-btn {
-    flex-shrink: 0 !important;
-  }
+.brand-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
 
-
-
-  .brand-title-wrap {
+.brand-title-wrap {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
 .header-logo {
-  height: 38px;
+  height: 54px;
   width: auto;
   object-fit: contain;
   filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.35));
 }
 
+.header-controls {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+/* On Desktop: Live Clock and Date Badge stay SIDE-BY-SIDE */
+.clock-date-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-clock {
+  font-size: 0.95rem;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+.header-badge {
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+.sound-btn {
+  flex-shrink: 0;
+}
+/* =========================================================
+   MOBILE ONLY RESPONSIVE RULES (Max 768px)
+   ========================================================= */
+@media (max-width: 768px) {
+  /* Date drops directly BELOW the Clock */
+  .clock-date-group {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px !important;
+  }
+
+  /* Compact clock */
+  .header-clock {
+    font-size: 0.82rem !important;
+    padding: 3px 8px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+
+  /* Compact date badge */
+  .header-badge {
+    display: inline-block !important;
+    font-size: 0.68rem !important;
+    padding: 2px 6px !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+    opacity: 0.9 !important;
+  }
+
+  /* Right-side controls row */
+  .header-controls {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  /* Music toggle */
+  .sound-btn {
+    flex-shrink: 0 !important;
+  }
+
+  /* Responsive header logo size on mobile */
+  .header-logo {
+    height: 38px !important;
+    width: auto !important;
+    object-fit: contain !important;
+    filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.35)) !important;
+  }
+}
   </style>
 </head>
 <body>
@@ -1144,7 +1213,7 @@
 
   <div class="container">
   <!-- HEADER -->
-    <header class="app-header" style="display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; width: 100% !important; gap: 16px;">
+    <header class="app-header" style="display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; width: 100% !important; gap: 16px;"></header>
       
       <!-- BRAND (LOGO ON LEFT, TEXTS ON RIGHT) -->
       <div class="brand-group" style="display: flex !important; flex-direction: row !important; align-items: center !important; gap: 14px !important;">
@@ -1162,8 +1231,6 @@
         <button type="button" class="sound-btn" id="musicToggleBtn" title="Background Music">🎵</button>
         <div class="header-badge" id="headerDateBadge">Today</div>
       </div>
-
-    </header>
 
     </header>
 
