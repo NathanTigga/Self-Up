@@ -1,5 +1,5 @@
 // --- UPDATE THIS VERSION NUMBER WHENEVER YOU CHANGE YOUR CODE ---
-const CACHE_NAME = "self-vs-self-v4.92";
+const CACHE_NAME = "self-vs-self-v5";
 
 const ASSETS = [
   "./",
@@ -33,22 +33,21 @@ self.addEventListener("activate", (e) => {
   );
   self.clients.claim();
 });
-
 // 3. Network-First Strategy: Try to get fresh code first, fall back to offline cache
 self.addEventListener("fetch", (e) => {
   e.respondWith(
     fetch(e.request)
-      .then((networkResponse) => {
-        // If network works, update the cache silently
-        return caches.open(CACHE_NAME).then((cache) => {
-          cache.put(e.request, networkResponse.clone());
-          return networkResponse;
-        });
+      .then((response) => {
+        // Only cache full 200 OK responses, ignore 206 partial streams & .mp3
+        if (response.status === 200 && !e.request.url.endsWith(".mp3")) {
+          const resClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(e.request, resClone);
+          });
+        }
+        return response;
       })
-      .catch(() => {
-        // If offline, serve from cache
-        return caches.match(e.request);
-      })
+      .catch(() => caches.match(e.request))
   );
 });
 
