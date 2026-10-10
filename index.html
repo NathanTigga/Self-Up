@@ -1222,6 +1222,14 @@
     width: 32px !important;
     height: 32px !important;
   }
+#modalNoteWrap {
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+  white-space: pre-wrap !important;
+  max-height: 110px !important;
+  overflow-y: auto !important;
+  padding-right: 4px !important;
+}
 }
   </style>
 </head>
@@ -2023,7 +2031,55 @@
         grid.appendChild(cell);
       }
     }
+/* AUTOMATIC MIDNIGHT ROLLOVER */
+function checkAutoDayRollover() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const todayKey = `${year}-${month}-${day}`;
 
+  const lastActiveDate = localStorage.getItem("lastActiveDate");
+
+  if (!lastActiveDate) {
+    localStorage.setItem("lastActiveDate", todayKey);
+    return;
+  }
+
+  if (lastActiveDate !== todayKey) {
+    if (!state.records[lastActiveDate]) {
+      const completedPts = Array.isArray(state.tasks)
+        ? state.tasks.filter(t => t.done).reduce((acc, t) => acc + (Number(t.points) || 1), 0)
+        : (state.todayPoints || 0);
+
+      state.records[lastActiveDate] = {
+        points: completedPts,
+        note: "Auto-completed at midnight",
+        photo: null,
+        autoClosed: true
+      };
+    }
+
+    if (typeof state.targetYesterday !== "undefined") {
+      state.targetYesterday = state.records[lastActiveDate]?.points || 0;
+    }
+
+    if (typeof state.todayPoints !== "undefined") {
+      state.todayPoints = 0;
+    }
+
+    if (Array.isArray(state.tasks)) {
+      state.tasks = state.tasks.map(t => ({ ...t, done: false }));
+    }
+
+    localStorage.setItem("lastActiveDate", todayKey);
+
+    if (typeof saveState === "function") saveState();
+    if (typeof renderTasks === "function") renderTasks();
+    if (typeof renderCalendar === "function") renderCalendar();
+    if (typeof updateStats === "function") updateStats();
+  }
+}
     /* MODAL */
     function openDayModal(key) {
       activeModalDate = key;
@@ -2033,12 +2089,17 @@
       const ph = document.getElementById("modalPhotoPlaceholder");
       const noteWrap = document.getElementById("modalNoteWrap");
 
-      if (rec && rec.note) {
-        noteWrap.textContent = `Reflection: "${rec.note}"`;
-        noteWrap.style.display = "block";
-      } else {
-        noteWrap.style.display = "none";
-      }
+    if (rec && rec.note) {
+    noteWrap.textContent = `Reflection: "${rec.note}"`;
+    noteWrap.style.display = "block";
+    noteWrap.style.wordBreak = "break-word";
+    noteWrap.style.overflowWrap = "anywhere";
+    noteWrap.style.whiteSpace = "pre-wrap";
+    noteWrap.style.maxHeight = "110px";
+    noteWrap.style.overflowY = "auto";
+  } else {
+    noteWrap.style.display = "none";
+  }
 
       if (rec && rec.photo) {
         img.src = rec.photo;
@@ -2408,7 +2469,7 @@ function setupEventListeners() {
   const clockEl = document.getElementById("liveClock");
   if (!clockEl) return;
 
-  function update() {
+function update() {
     const now = new Date();
     clockEl.textContent = now.toLocaleTimeString([], {
       hour: '2-digit',
@@ -2416,6 +2477,7 @@ function setupEventListeners() {
       second: '2-digit',
       hour12: true
     });
+    checkAutoDayRollover();
   }
 
   update();
