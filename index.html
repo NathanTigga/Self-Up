@@ -1085,6 +1085,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  .brand-tos {
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
 }
 /* Responsive mobile adjustments */
 @media (max-width: 640px) {
@@ -1097,6 +1104,7 @@
   .brand-title {
     font-size: 1.6rem !important;
     white-space: nowrap;
+
   }
 
   .user-greeting {
@@ -1115,6 +1123,18 @@
     padding: 4px 10px;
     white-space: nowrap;
   }
+  .brand-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-logo {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.35));
+}
 }
   </style>
 </head>
@@ -1122,28 +1142,37 @@
   <canvas id="confettiCanvas"></canvas>
 
   <div class="container">
-   <!-- HEADER -->
-   <header class="app-header">
-      <div class="brand-group">
-        <h1 class="brand-title" style="font-size: 2.2rem;">TOS Self Up <span class="user-greeting" style="font-size: 1.4rem;">• Hey Nitin</span></h1>
-        <div class="brand-subtitle">Beat yesterday. Win tomorrow. Track every day.</div>
+  <!-- HEADER -->
+    <header class="app-header" style="display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; width: 100% !important; gap: 16px;">
+      
+      <!-- BRAND (LOGO ON LEFT, TEXTS ON RIGHT) -->
+      <div class="brand-group" style="display: flex !important; flex-direction: row !important; align-items: center !important; gap: 14px !important;">
+        <img src="logo.png" alt="TOS Media" class="header-logo" style="height: 54px; width: auto; object-fit: contain; filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.35)); display: block; flex-shrink: 0;" />
+        
+        <div class="brand-text-col" style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px;">
+          <span class="user-greeting" style="font-size: 1.45rem; font-weight: 700; color: #38bdf8; line-height: 1.1; margin: 0;">• Hey Nitin</span>
+          <div class="brand-subtitle" style="font-size: 0.8rem; font-weight: 500; color: #94a3b8; letter-spacing: 0.2px; opacity: 0.85; line-height: 1.2; margin: 0;">Beat yesterday. Win tomorrow. Track every day.</div>
+        </div>
       </div>
-      <div class="header-controls">
+
+      <!-- CONTROLS -->
+      <div class="header-controls" style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
         <div class="header-clock" id="liveClock">--:--:--</div>
         <button type="button" class="sound-btn" id="musicToggleBtn" title="Background Music">🎵</button>
         <div class="header-badge" id="headerDateBadge">Today</div>
       </div>
+
     </header>
 
     <!-- FULL-WIDTH QUOTE CARD -->
-    <div class="quote-card">
-      <div class="quote-icon">⚡</div>
-      <div class="quote-content" id="quoteWrap">
-        <div id="quoteText">"Keep your heart with all vigilance, for from it flow the springs of life."</div>
-        <div class="quote-author" id="quoteAuthor">— Proverbs 4:23</div>
-      </div>
-      <button type="button" class="quote-btn" id="refreshQuoteBtn" title="Next Verse">↻</button>
+<div class="quote-card" style="border: 1px solid rgba(56, 189, 248, 0.4); box-shadow: 0 0 20px rgba(56, 189, 248, 0.2), inset 0 0 15px rgba(56, 189, 248, 0.05);">
+  <div class="quote-icon" style="filter: drop-shadow(0 0 8px #f59e0b);">⚡</div>
+  <div class="quote-content" id="quoteWrap" style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;">
+      <div id="quoteText" style="color: #f1f5f9; text-shadow: 0 0 12px rgba(56, 189, 248, 0.5); text-align: center;">"Keep your heart with all vigilance, for from it flow the springs of life."</div>
+      <div class="quote-author" id="quoteAuthor" style="text-align: center; color: #38bdf8; font-size: 0.88rem; font-weight: 600; opacity: 0.85;">— Proverbs 4:23</div>
     </div>
+  <button type="button" class="quote-btn" id="refreshQuoteBtn" title="Next Verse">↻</button>
+</div>
 
     <!-- MAIN DASHBOARD GRID -->
     <div class="dashboard-grid">
@@ -1219,11 +1248,12 @@
         <div class="task-form">
           <input type="text" id="taskInput" class="task-input" placeholder="Custom task..." />
           <select id="taskCategory" class="category-select">
-            <option value="Habit">Habit</option>
-            <option value="Gym">Gym</option>
-            <option value="Study">Study</option>
-            <option value="Code">Code</option>
-          </select>
+  <option value="Task" selected>Task</option>
+  <option value="Study">Study</option>
+  <option value="Code">Code</option>
+  <option value="Gym">Gym</option>
+  <option value="Habit">Habit</option>
+</select>
           <input type="number" id="pointsInput" class="points-input" value="1" min="1" max="10" inputmode="numeric" />
           <button type="button" id="addTaskBtn" class="add-task-btn">Add</button>
         </div>
@@ -2187,46 +2217,45 @@ function updateMonthlyComparison() {
     }
 
     /* EVENT LISTENERS & BACKUP */
-    function setupEventListeners() {
-      const music = document.getElementById("bgMusic");
-      const musicBtn = document.getElementById("musicToggleBtn");
-      let musicStarted = false;
+function setupEventListeners() {
+  const music = document.getElementById("bgMusic");
+  const musicBtn = document.getElementById("musicToggleBtn");
+  let musicStarted = false;
 
-      music.volume = 0.35; // Gentle background volume
+  if (music) {
+    music.volume = 0.35;
+  }
 
-      function updateMusicUI() {
-        if (!music.paused) {
-          musicBtn.textContent = "🎵";
-          musicBtn.classList.add("active");
-        } else {
-          musicBtn.textContent = "🔇";
-          musicBtn.classList.remove("active");
-        }
+  function updateMusicUI() {
+    if (musicBtn && music) {
+      if (!music.paused) {
+        musicBtn.textContent = "🎵";
+        musicBtn.classList.add("active");
+      } else {
+        musicBtn.textContent = "🔇";
+        musicBtn.classList.remove("active");
       }
+    }
+  }
 
-      function attemptAutoplay() {
-        if (!musicStarted) {
-          music.play().then(() => {
-            musicStarted = true;
-            updateMusicUI();
-            document.removeEventListener("click", attemptAutoplay);
-            document.removeEventListener("touchstart", attemptAutoplay);
-          }).catch(() => {});
-        }
-      }
-
-      document.addEventListener("click", attemptAutoplay, { once: true });
-      document.addEventListener("touchstart", attemptAutoplay, { once: true });
-
-      musicBtn.onclick = (e) => {
-        e.stopPropagation();
-        if (music.paused) {
-          music.play();
-        } else {
-          music.pause();
-        }
+  if (musicBtn && music) {
+    musicBtn.onclick = function() {
+      if (music.paused) {
+        music.play().then(() => {
+          musicStarted = true;
+          updateMusicUI();
+        }).catch(err => console.warn("Audio play blocked:", err));
+      } else {
+        music.pause();
         updateMusicUI();
-      };
+      }
+    };
+  }
+    
+
+      
+
+    
 
       // EXPORT
       document.getElementById("exportBtn").onclick = () => {
@@ -2278,7 +2307,7 @@ function updateMonthlyComparison() {
       };
 
       window.addEventListener("resize", () => renderChart(1));
-    }
+}
 
     function escapeHtml(str) {
       return str.replace(/[&<>'"]/g, tag => ({
