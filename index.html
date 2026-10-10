@@ -1086,6 +1086,36 @@
   align-items: center;
   justify-content: center;
 }
+/* Responsive mobile adjustments */
+@media (max-width: 640px) {
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .brand-title {
+    font-size: 1.6rem !important;
+    white-space: nowrap;
+  }
+
+  .user-greeting {
+    font-size: 1.1rem !important;
+  }
+
+  .header-controls {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header-clock {
+    font-size: 0.95rem;
+    padding: 4px 10px;
+    white-space: nowrap;
+  }
+}
   </style>
 </head>
 <body>
