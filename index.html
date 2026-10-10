@@ -1094,49 +1094,50 @@
 }
 }
 /* =========================================================
-   DESKTOP DEFAULT RULES (Laptop / PC)
+   DESKTOP DEFAULT RULES (Keeps everything in one top row)
    ========================================================= */
 .app-header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
 }
 
 .brand-group {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 14px !important;
 }
 
 .brand-title-wrap {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
 }
 
 .header-logo {
-  height: 54px;
-  width: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.35));
+  height: 54px !important;
+  width: auto !important;
+  object-fit: contain !important;
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.35)) !important;
 }
 
 .header-controls {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin-left: auto !important;
 }
 
-/* On Desktop: Live Clock and Date Badge stay SIDE-BY-SIDE */
+/* Side-by-side on desktop */
 .clock-date-group {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px !important;
 }
 
 .header-clock {
@@ -1152,58 +1153,72 @@
 }
 
 .sound-btn {
-  flex-shrink: 0;
+  flex-shrink: 0 !important;
 }
+
 /* =========================================================
    MOBILE ONLY RESPONSIVE RULES (Max 768px)
    ========================================================= */
 @media (max-width: 768px) {
-  /* Date drops directly BELOW the Clock */
-  .clock-date-group {
+  .app-header {
     display: flex !important;
-    flex-direction: column !important;
+    flex-direction: row !important;
     align-items: center !important;
-    justify-content: center !important;
-    gap: 3px !important;
+    justify-content: space-between !important;
+    width: 100% !important;
   }
 
-  /* Compact clock */
-  .header-clock {
-    font-size: 0.82rem !important;
-    padding: 3px 8px !important;
-    line-height: 1 !important;
-    white-space: nowrap !important;
-  }
-
-  /* Compact date badge */
-  .header-badge {
-    display: inline-block !important;
-    font-size: 0.68rem !important;
-    padding: 2px 6px !important;
-    line-height: 1.1 !important;
-    white-space: nowrap !important;
-    opacity: 0.9 !important;
-  }
-
-  /* Right-side controls row */
-  .header-controls {
+  .brand-group {
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
     gap: 8px !important;
   }
 
-  /* Music toggle */
-  .sound-btn {
-    flex-shrink: 0 !important;
-  }
-
-  /* Responsive header logo size on mobile */
   .header-logo {
     height: 38px !important;
     width: auto !important;
     object-fit: contain !important;
     filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.35)) !important;
+  }
+
+  .header-controls {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-left: auto !important;
+  }
+
+  /* Mobile only: stack date directly beneath clock */
+  .clock-date-group {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 2px !important;
+  }
+
+  .header-clock {
+    font-size: 0.80rem !important;
+    padding: 3px 8px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+
+  .header-badge {
+    display: inline-block !important;
+    font-size: 0.65rem !important;
+    padding: 2px 6px !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+    opacity: 0.9 !important;
+  }
+
+  .sound-btn {
+    flex-shrink: 0 !important;
+    width: 32px !important;
+    height: 32px !important;
   }
 }
   </style>
