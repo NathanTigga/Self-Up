@@ -1095,76 +1095,28 @@
 }
 /* Responsive mobile adjustments */
 @media (max-width: 768px) {
-  /* Force the header into 2 vertical rows */
-  .app-header {
+  /* Switch clock-date group to a vertical stack only on mobile */
+  .clock-date-group {
     display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 14px !important;
-    padding: 16px !important;
-  }
-
-  /* Row 1: Logo and text stretch across */
-  .brand-group {
-    display: flex !important;
-    flex-direction: row !important;
+    flex-direction: column !important; /* Date goes below time */
     align-items: center !important;
-    gap: 12px !important;
-    width: 100% !important;
-  }
-
-  .header-logo {
-    height: 46px !important;
-    width: auto !important;
-    flex-shrink: 0 !important;
-  }
-
-  .brand-text-col {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-  }
-
-  .user-greeting {
-    font-size: 1.25rem !important;
-    white-space: nowrap !important;
-    line-height: 1.2 !important;
-  }
-
-  .brand-subtitle {
-    font-size: 0.74rem !important;
-    line-height: 1.3 !important;
-    white-space: normal !important;
-  }
-
-  /* Row 2: Clock, music, and date stretch across the full width */
-  .header-controls {
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    width: 100% !important;
-    gap: 8px !important;
-    margin-left: 0 !important;
-    padding-top: 8px !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    gap: 4px !important;
   }
 
   .header-clock {
     font-size: 0.85rem !important;
-    padding: 6px 10px !important;
-    flex-shrink: 0 !important;
-  }
-
-  .sound-btn {
-    flex-shrink: 0 !important;
+    padding: 4px 8px !important;
+    line-height: 1 !important;
   }
 
   .header-badge {
-    display: inline-flex !important;
-    font-size: 0.78rem !important;
-    padding: 6px 10px !important;
+    font-size: 0.72rem !important;
+    padding: 2px 6px !important;
+    line-height: 1.1 !important;
     white-space: nowrap !important;
+  }
+
+  .sound-btn {
     flex-shrink: 0 !important;
   }
 }
@@ -1206,12 +1158,14 @@
         </div>
       </div>
 
-      <!-- CONTROLS -->
+  <!-- CONTROLS -->
       <div class="header-controls" style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
         <div class="header-clock" id="liveClock">--:--:--</div>
         <button type="button" class="sound-btn" id="musicToggleBtn" title="Background Music">🎵</button>
         <div class="header-badge" id="headerDateBadge">Today</div>
       </div>
+
+    </header>
 
     </header>
 
