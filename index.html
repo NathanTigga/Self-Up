@@ -1169,6 +1169,44 @@ body {
     font-size: 12px !important;
   }
 }
+/* Fix squished card contents on mobile */
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Make task bar wrap so Add button doesn't float over the cards */
+  .task-creator-row,
+  .task-input-row,
+  #taskForm {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  /* Full width custom task input */
+  .task-creator-row input[type="text"],
+  input#taskInput {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+  }
+
+  /* Let category, points, and Add button share the next row */
+  .category-select,
+  .points-input,
+  .btn-add,
+  #addTaskBtn {
+    flex: 1 1 auto !important;
+    position: static !important;
+  }
+
+  /* Prevent Head-to-Head overlap */
+  .compare-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+}
 }
     
   </style>
