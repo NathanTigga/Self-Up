@@ -1101,6 +1101,74 @@ body {
     url("wallpaper.jpg") center center / cover fixed no-repeat !important;
 
 }
+/* =========================================
+   MOBILE RESPONSIVE FIX (Under 768px)
+   ========================================= */
+@media (max-width: 768px) {
+  /* 1. Force single column layout */
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    padding: 12px !important;
+  }
+
+  /* 2. Fix header and badges wrapping */
+  .card-title {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .win-rate-badge,
+  .tasks-done-badge {
+    margin-left: 0 !important;
+    font-size: 11px !important;
+  }
+
+  /* 3. Fix task input row squeezing */
+  .task-creator-row {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .task-creator-row input[type="text"] {
+    min-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .task-creator-row select,
+  .task-creator-row input[type="number"],
+  .task-creator-row button {
+    flex: 1 !important;
+  }
+
+  /* 4. Fix BMI inputs */
+  .bmi-inputs {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .bmi-field {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 5. Fix Monthly Head-to-Head column widths */
+  .compare-grid {
+    gap: 8px !important;
+  }
+
+  .compare-side {
+    padding: 12px 10px !important;
+  }
+
+  .compare-side h4 {
+    font-size: 13px !important;
+  }
+
+  .compare-stat-row {
+    font-size: 12px !important;
+  }
+}
 }
     
   </style>
