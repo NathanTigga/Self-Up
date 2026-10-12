@@ -2425,22 +2425,57 @@ body {
         document.getElementById("importFile").click();
       };
 
-      document.getElementById("importFile").onchange = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (evt) => {
-          try {
-            state = JSON.parse(evt.target.result);
-            saveState();
-            location.reload();
-          } catch (err) {
-            alert("Invalid JSON file.");
-          }
-        };
-        reader.readAsText(file);
+  document.getElementById("importFile").onchange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    try {
+      const imported = JSON.parse(evt.target.result);
+
+      // 1. Merge the past dates/logs in `records`
+      const mergedRecords = {
+        ...(state.records || {}),
+        ...(imported.records || {})
       };
 
+      // 2. Merge task templates without creating duplicates
+      const currentTasks = Array.isArray(state.tasks) ? state.tasks : [];
+      const incomingTasks = Array.isArray(imported.tasks) ? imported.tasks : [];
+      const mergedTasks = [...currentTasks];
+
+      incomingTasks.forEach((newItem) => {
+        const exists = mergedTasks.some((cur) => {
+          if (cur.id && newItem.id) return cur.id === newItem.id;
+          if (cur.text && newItem.text) return cur.text.trim().toLowerCase() === newItem.text.trim().toLowerCase();
+          return false;
+        });
+        if (!exists) mergedTasks.push(newItem);
+      });
+
+      // 3. Assemble complete merged state
+      state = {
+        ...state,
+        records: mergedRecords,
+        tasks: mergedTasks,
+        bmi: imported.bmi || state.bmi,
+        soundEnabled: imported.soundEnabled !== undefined ? imported.soundEnabled : state.soundEnabled,
+        // Keep active points if today's score is already tracked on laptop
+        todayScore: Math.max(state.todayScore || 0, imported.todayScore || 0),
+        yesterdayScore: Math.max(state.yesterdayScore || 0, imported.yesterdayScore || 0)
+      };
+
+      saveState();
+      alert("Import successful! Laptop history and mobile records merged.");
+      location.reload();
+    } catch (err) {
+      console.error(err);
+      alert("Invalid JSON file.");
+    }
+  };
+  reader.readAsText(file);
+};
       // RESET
       document.getElementById("resetAllBtn").onclick = () => {
         if (confirm("Reset all tracked days, tasks, and history? This cannot be undone.")) {
