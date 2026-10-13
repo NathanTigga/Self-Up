@@ -7,6 +7,7 @@
   <link rel="icon" type="image/png" href="icon-512.png" />
   <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
+    <script src="https://cdn.jsdelivr.net/npm/idb-keyval@6/dist/umd.js"></script>
   <style>
     :root {
       --bg: #090d16;
@@ -1296,7 +1297,20 @@ body {
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.15);
-}   
+} 
+.photo-dot, .note-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 2px 1px;
+}
+.photo-dot {
+  background-color: #38bdf8;
+}
+.note-dot {
+  background-color: #f59e0b;
+}  
   </style>
 </head>
 <body>
@@ -1533,6 +1547,10 @@ body {
         <img id="modalPhotoImg" class="modal-photo-img" alt="Daily Progress" />
         <div id="modalPhotoPlaceholder" class="modal-placeholder">📷 No photo logged for this date.</div>
       </div>
+      <div id="modalTasksWrap" style="display: none; margin: 10px 0; text-align: left; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; max-height: 140px; overflow-y:auto;">
+  <div style="font-size: 0.8rem; color: #94a3b8; font-weight: 600; margin-bottom: 4px;">Completed Tasks:</div>
+  <ul id="modalTasksList" style="margin: 0; padding-left: 18px; font-size: 0.85rem; color: #f1f5f9;"></ul>
+</div>
       <input type="file" id="modalFileInput" accept="image/*" style="display:none;" />
       <div class="modal-actions">
         <button type="button" class="modal-btn btn-upload" id="modalUploadBtn">📸 Add / Change Photo</button>
@@ -1753,19 +1771,34 @@ body {
       setupEventListeners();
     }
 
-    function loadState() {
-      const saved = localStorage.getItem("tos_self_up_data");
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          state = { ...state, ...parsed };
-          delete state.waterBottles;
-          delete state.waterBonusAwarded;
-          delete state.streak;
-        } catch (e) {
-          console.error(e);
-        }
+   async function loadState() {
+  try {
+    // 1. Try reading from IndexedDB
+    let parsed = await idbKeyval.get("tos_self_up_data");
+
+    // 2. Fallback: if IndexedDB is empty, check legacy localStorage
+    if (!parsed) {
+      const legacySaved = localStorage.getItem("tos_self_up_data");
+      if (legacySaved) {
+        parsed = JSON.parse(legacySaved);
+        // Copy directly into IndexedDB and clean localStorage
+        await idbKeyval.set("tos_self_up_data", parsed);
+        localStorage.removeItem("tos_self_up_data");
+        console.log("Migrated data to IndexedDB!");
       }
+    }
+
+    if (parsed) {
+      state = { ...state, ...parsed };
+      delete state.waterBottles;
+      delete state.waterBonusAwarded;
+      delete state.streak;
+    }
+  } catch (e) {
+    console.error("IndexedDB Load Error:", e);
+  }
+  renderCalendar();
+}
 
       if (!state.tasks || state.tasks.length === 0) {
         state.tasks = [
@@ -1773,11 +1806,15 @@ body {
           { id: 2, text: "Deep Work / Study 1hr", category: "Study", points: 2, completed: false }
         ];
       }
-    }
 
-    function saveState() {
-      localStorage.setItem("tos_self_up_data", JSON.stringify(state));
-    }
+
+  async function saveState() {
+  try {
+    await idbKeyval.set("tos_self_up_data", state);
+  } catch (e) {
+    console.error("IndexedDB Save Error:", e);
+  }
+}
 
     /* CLOCK & DATE */
     function updateDashboardTime() {
@@ -1868,17 +1905,25 @@ body {
       if (badge) badge.textContent = `${completedCount}/${state.tasks.length} done`;
     }
 
-    function toggleTask(id) {
-      const t = state.tasks.find(x => x.id === id);
-      if (t) {
-        t.completed = !t.completed;
-        if (t.completed) playTone(784, "sine", 0.12);
-        else playTone(392, "sine", 0.08);
-        saveState();
-        renderTasks();
-        updateBattleScore(true);
-      }
-    }
+  async function toggleTask(id) {
+  const t = state.tasks.find(x => x.id === id);
+  if (t) {
+    t.completed = !t.completed;
+    if (t.completed) playTone(784, "sine", 0.12);
+    else playTone(392, "sine", 0.08);
+
+    const today = new Date();
+    const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+    if (!state.records[todayKey]) state.records[todayKey] = {};
+    state.records[todayKey].completedTasks = state.tasks
+      .filter(x => x.completed)
+      .map(x => x.text);
+
+    await saveState();
+    renderTasks();
+    updateBattleScore(true);
+  }
+}
 
     function deleteTask(id) {
       state.tasks = state.tasks.filter(x => x.id !== id);
@@ -2186,6 +2231,16 @@ body {
         img.style.display = "none";
         ph.style.display = "block";
       }
+      const tasksWrap = document.getElementById("modalTasksWrap");
+    const tasksList = document.getElementById("modalTasksList");
+    if (tasksWrap && tasksList) {
+      if (rec && rec.completedTasks && rec.completedTasks.length > 0) {
+        tasksList.innerHTML = rec.completedTasks.map(t => `<li>${t}</li>`).join("");
+        tasksWrap.style.display = "block";
+      } else {
+        tasksWrap.style.display = "none";
+      }
+    }
       document.getElementById("dayModal").style.display = "flex";
     }
 
@@ -2420,52 +2475,62 @@ body {
       // CLOSE DAY
       const closeBtn = document.getElementById("closeDayBtn");
       if (closeBtn) {
-        closeBtn.onclick = () => {
-          const isWinner = state.todayScore >= state.yesterdayScore && state.todayScore > 0;
-          const confirmMsg = isWinner
-            ? `🔥 Close day with a WIN of ${state.todayScore} points?`
-            : `Close day with ${state.todayScore} points? (Target was ${state.yesterdayScore})`;
+closeBtn.onclick = async () => {
+            const isWinner = state.todayScore >= state.yesterdayScore && state.todayScore > 0;
+            const confirmMsg = isWinner
+                ? `🔥 Close day with a WIN of ${state.todayScore} points?`
+                : `Close day with ${state.todayScore} points? (Target was ${state.yesterdayScore})`;
 
-          if (!confirm(confirmMsg)) return;
+            if (!confirm(confirmMsg)) return;
 
-          const reflection = prompt("Optional: Record a 1-line victory or reflection for today:", "");
-          const todayKey = getTodayKey();
-          const pointsScored = state.todayScore;
+            const reflection = prompt("Optional: Record a 1-line victory or reflection for today:", "");
+            const todayKey = getTodayKey();
+            const pointsScored = state.todayScore;
 
-          state.records[todayKey] = {
-            points: pointsScored,
-            target: state.yesterdayScore,
-            status: isWinner ? "beat" : "behind",
-            note: reflection ? reflection.trim() : null,
-            photo: state.records[todayKey]?.photo || null
+            // Capture completed tasks before reset
+            const finishedTasks = state.tasks
+                .filter(t => t.completed)
+                .map(t => t.text);
+
+            // Save record
+            state.records[todayKey] = {
+                points: pointsScored,
+                target: state.yesterdayScore,
+                status: isWinner ? "beat" : "behind",
+                note: reflection ? reflection.trim() : null,
+                photo: state.records[todayKey]?.photo || null,
+                completedTasks: finishedTasks.length > 0 ? finishedTasks : (state.records[todayKey]?.completedTasks || [])
+            };
+
+            state.yesterdayScore = pointsScored;
+            state.tasks.forEach(t => t.completed = false);
+            state.todayScore = 0;
+
+            await saveState();
+            renderTasks();
+            renderCalendar();
+            updateBattleScore(false);
+
+            document.getElementById("yesterdayScore").textContent = state.yesterdayScore;
+            document.getElementById("todayScore").textContent = state.todayScore;
+            const msg = document.getElementById("battleStatusMsg");
+            if (msg) {
+                msg.className = "battle-status status-tied";
+                msg.textContent = "Day closed! Ready for your next battle.";
+            }
+
+            if (isWinner) {
+                triggerConfetti();
+                playWinSound();
+            }
+
+            updateWinRateUI();
+            renderCalendar();
+            updateMonthlyComparison();
+            renderChartAnimated();
           };
-
-          state.yesterdayScore = pointsScored;
-          state.tasks.forEach(t => t.completed = false);
-          state.todayScore = 0;
-
-          saveState();
-          renderTasks();
-          
-          document.getElementById("yesterdayScore").textContent = state.yesterdayScore;
-          document.getElementById("todayScore").textContent = state.todayScore;
-          const msg = document.getElementById("battleStatusMsg");
-          if (msg) {
-            msg.className = "battle-status status-tied";
-            msg.textContent = "Day closed! Ready for your next battle.";
-          }
-
-          if (isWinner) {
-            triggerConfetti();
-            playWinSound();
-          }
-
-          updateWinRateUI();
-          renderCalendar();
-          updateMonthlyComparison();
-          renderChartAnimated();
-        };
-      }
+        }
+      
 
       // EXPORT
       document.getElementById("exportBtn").onclick = () => {
