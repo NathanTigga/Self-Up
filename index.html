@@ -2656,14 +2656,19 @@ closeBtn.onclick = async () => {
         }
       
 
-      // EXPORT
-      document.getElementById("exportBtn").onclick = () => {
-        const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = `tos_self_up_backup_${getTodayKey()}.json`;
-        a.click();
-      };
+   // EXPORT
+        document.getElementById("exportBtn").onclick = () => {
+            const backupPayload = {
+                ...state,
+                insights: state.insights || []
+            };
+            const blob = new Blob([JSON.stringify(backupPayload, null, 2)], { type: "application/json" });
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = `tos_self_up_backup_${getTodayKey()}.json`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        };
 
       // IMPORT
       document.getElementById("importBtn").onclick = () => {
@@ -2708,7 +2713,8 @@ closeBtn.onclick = async () => {
         soundEnabled: imported.soundEnabled !== undefined ? imported.soundEnabled : state.soundEnabled,
         // Keep active points if today's score is already tracked on laptop
         todayScore: Math.max(state.todayScore || 0, imported.todayScore || 0),
-        yesterdayScore: Math.max(state.yesterdayScore || 0, imported.yesterdayScore || 0)
+        yesterdayScore: Math.max(state.yesterdayScore || 0, imported.yesterdayScore || 0),
+        insights: Array.isArray(imported.insights) ? imported.insights : (state.insights || []),
       };
 
       saveState();
