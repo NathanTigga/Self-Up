@@ -1311,6 +1311,20 @@ body {
 .note-dot {
   background-color: #f59e0b;
 }  
+/* Responsive Head-to-Head: Side-by-side on desktop, stacked on mobile */
+.compare-boxes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    width: 100%;
+}
+
+@media (max-width: 650px) {
+    .compare-boxes-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+}
   </style>
 </head>
 <body>
@@ -1460,29 +1474,68 @@ body {
         </div>
         <div class="task-list" id="taskList"></div>
       </section>
+      <!-- KEY HIGHLIGHTS & NOTES CARD -->
+        <section class="card wisdom-card" style="display: flex; flex-direction: column; height: 100%; box-sizing: border-box;">
+            <div class="card-title" style="margin-bottom: 10px;">
+                <div class="card-title-left" style="display: flex; align-items: center; gap: 8px; font-weight: 600;">
+                    <span>💡</span> Key Highlights & Notes
+                </div>
+            </div>
 
-      <!-- ROW 2, COL 2: MONTHLY HEAD-TO-HEAD -->
-      <section class="card">
-        <div class="card-title">
-          <div class="card-title-left">📊 Monthly Head-to-Head</div>
-          <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Current vs Previous</span>
-        </div>
+            <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                <input type="text" id="wisdomInput" placeholder="Write key takeaway or rule..." 
+                       class="task-input" style="flex: 1; padding: 8px 12px; font-size: 0.82rem; border-radius: 8px;">
+                <button type="button" id="saveWisdomBtn" class="add-task-btn" style="padding: 8px 16px; font-size: 0.82rem; border-radius: 8px;">
+                    Add
+                </button>
+            </div>
 
-        <div class="compare-boxes">
-          <div class="compare-side current-side" id="sideCurrent">
-            <div class="compare-side-title" id="sideCurrentTitle">Current Month</div>
-            <div class="compare-stat-row"><span>Total Pts:</span><span id="sideCurrentPts">0</span></div>
-            <div class="compare-stat-row"><span>Days Logged:</span><span id="sideCurrentDays">0</span></div>
-            <div class="compare-stat-row"><span>Daily Avg:</span><span id="sideCurrentAvg">0.0</span></div>
-          </div>
-          <div class="compare-side" id="sidePrevious">
-            <div class="compare-side-title" id="sidePreviousTitle">Previous Month</div>
-            <div class="compare-stat-row"><span>Total Pts:</span><span id="sidePreviousPts">0</span></div>
-            <div class="compare-stat-row"><span>Days Logged:</span><span id="sidePreviousDays">0</span></div>
-            <div class="compare-stat-row"><span>Daily Avg:</span><span id="sidePreviousAvg">0.0</span></div>
-          </div>
-        </div>
-      </section>
+            <div id="wisdomList" style="flex: 1; min-height: 0; max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-right: 4px;">
+                <!-- Points render here -->
+            </div>
+        </section>
+
+
+<!-- FULL WIDTH: MONTHLY HEAD-TO-HEAD -->
+        <section class="card card-full" style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 12px; box-sizing: border-box;">
+            <div class="card-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0;">
+                <div class="card-title-left" style="display: flex; align-items: center; gap: 8px; font-weight: 600;">
+                    <span>📊</span> Monthly Head-to-Head
+                </div>
+                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Current vs Previous</span>
+            </div>
+
+            <div class="compare-boxes-grid">
+                <!-- Current Month Card -->
+                <div class="compare-side current-side" id="sideCurrent" style="background: rgba(0, 0, 0, 0.22); padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div class="compare-side-title" id="sideCurrentTitle" style="font-weight: 600; color: #38bdf8; margin-bottom: 8px;">Oct 2026</div>
+                    <div class="compare-stat-row" style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 4px;">
+                        <span style="color: var(--text-muted, #94a3b8);">Total Pts:</span><span id="sideCurrentPts">0</span>
+                    </div>
+                    <div class="compare-stat-row" style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 4px;">
+                        <span style="color: var(--text-muted, #94a3b8);">Days Logged:</span><span id="sideCurrentDays">0</span>
+                    </div>
+                    <div class="compare-stat-row" style="display: flex; justify-content: space-between; font-size: 0.82rem;">
+                        <span style="color: var(--text-muted, #94a3b8);">Daily Avg:</span><span id="sideCurrentAvg">0.0</span>
+                    </div>
+                </div>
+
+                <!-- Previous Month Card -->
+                <div class="compare-side" id="sidePrevious" style="background: rgba(0, 0, 0, 0.22); padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div class="compare-side-title" id="sidePreviousTitle" style="font-weight: 600; color: #94a3b8; margin-bottom: 8px;">Sep 2026</div>
+                    <div class="compare-stat-row" style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 4px;">
+                        <span style="color: var(--text-muted, #94a3b8);">Total Pts:</span><span id="sidePreviousPts">0</span>
+                    </div>
+                    <div class="compare-stat-row" style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 4px;">
+                        <span style="color: var(--text-muted, #94a3b8);">Days Logged:</span><span id="sidePreviousDays">0</span>
+                    </div>
+                    <div class="compare-stat-row" style="display: flex; justify-content: space-between; font-size: 0.82rem;">
+                        <span style="color: var(--text-muted, #94a3b8);">Daily Avg:</span><span id="sidePreviousAvg">0.0</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+   
 
       <!-- ROW 3: ACTIONS & BACKUP STRIP (FULL WIDTH) -->
       <section class="card card-full">
@@ -1763,6 +1816,7 @@ body {
       getNewQuote();
       initBMI();
       renderTasks();
+      renderWisdomVault();
       updateBattleScore(false);
       initCalendar();
       updateMonthlyComparison();
@@ -1873,7 +1927,52 @@ body {
       const pct = Math.round((wins / totalDays) * 100);
       badge.textContent = `🎯 ${pct}% Win Rate (${wins}W/${totalDays}D)`;
     }
+// Render Points List
+function renderWisdomVault() {
+    const list = document.getElementById("wisdomList");
+    if (!list) return;
 
+    list.innerHTML = "";
+    const insights = state.insights || [];
+
+    if (insights.length === 0) {
+        list.innerHTML = `<div style="font-size: 0.78rem; color: var(--text-muted, #64748b); text-align: center; padding: 14px 0;">No notes saved yet.</div>`;
+        return;
+    }
+
+    // Render in reverse (newest first)
+    for (let i = insights.length - 1; i >= 0; i--) {
+        const item = insights[i];
+        const originalIndex = i; // Store exact index for 100% reliable deletion
+
+        const row = document.createElement("div");
+        row.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: rgba(0, 0, 0, 0.24); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05); gap: 10px;";
+
+        row.innerHTML = `
+            <div style="font-size: 0.82rem; color: #e2e8f0; line-height: 1.35; flex: 1; word-break: break-word;">
+                <span style="color: #38bdf8; margin-right: 6px;">•</span>${item.text || item}
+            </div>
+            <button type="button" class="del-btn" style="background: transparent; border: none; color: #94a3b8; font-size: 1.1rem; cursor: pointer; padding: 2px 8px; line-height: 1; border-radius: 4px;" title="Delete">✕</button>
+        `;
+
+        // Direct index delete: cannot fail even if item ID was missing
+        row.querySelector(".del-btn").onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            deleteWisdom(originalIndex);
+        };
+
+        list.appendChild(row);
+    }
+}
+
+// 100% Reliable Delete by Index
+async function deleteWisdom(index) {
+    if (!state.insights) return;
+    state.insights.splice(index, 1);
+    await saveState();
+    renderWisdomVault();
+}
     /* TASKS LOGIC */
     function renderTasks() {
       const list = document.getElementById("taskList");
@@ -2442,6 +2541,31 @@ body {
           }
         };
       }
+      // WISDOM VAULT LISTENERS
+    const saveWisdomBtn = document.getElementById("saveWisdomBtn");
+    const wisdomInput = document.getElementById("wisdomInput");
+
+    if (saveWisdomBtn && wisdomInput) {
+        saveWisdomBtn.onclick = async () => {
+            const val = wisdomInput.value.trim();
+            if (!val) return;
+
+            state.insights = state.insights || [];
+            state.insights.push({
+                id: Date.now().toString(),
+                text: val,
+                date: new Date().toISOString()
+            });
+
+            wisdomInput.value = "";
+            await saveState();
+            renderWisdomVault();
+        };
+
+        wisdomInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") saveWisdomBtn.click();
+        });
+    }
 
       // ADD TASK
       const addBtn = document.getElementById("addTaskBtn");
