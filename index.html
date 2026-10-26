@@ -1809,10 +1809,10 @@ body {
       }
     }
 
-    /* INITIALIZATION */
-    function init() {
-      loadState();
-      updateDashboardTime();
+   /* INITIALIZATION */
+async function init() {
+    await loadState();
+    updateDashboardTime();
       getNewQuote();
       initBMI();
       renderTasks();
@@ -2439,7 +2439,19 @@ async function deleteWisdom(index) {
         const key = `${y}-${m}-${day}`;
 
         labels.push(i === 0 ? "Today" : d.toLocaleDateString("en-US", { weekday: "narrow" }));
-        let score = (i === 0) ? Math.max(state.todayScore, state.records[key]?.points || 0) : (state.records[key]?.points || 0);
+       const rec = (state.records && state.records[key]) ? state.records[key] : null;
+        let score = 0;
+        if (i === 0) {
+            score = Math.max(state.todayScore || 0, rec?.score || 0);
+        } else if (rec) {
+            if (typeof rec.score === 'number' && rec.score > 0) {
+                score = rec.score;
+            } else if (Array.isArray(rec.completedTasks)) {
+                score = rec.completedTasks.length;
+            } else if (Array.isArray(rec.tasks)) {
+                score = rec.tasks.filter(t => t.completed || t.done).length;
+            }
+        }
         scores.push(score);
       }
 
@@ -2703,6 +2715,23 @@ closeBtn.onclick = async () => {
         });
         if (!exists) mergedTasks.push(newItem);
       });
+  
+        // 2b. Merge insights / notes without losing existing PC points
+        const currentInsights = Array.isArray(state.insights) ? state.insights : [];
+        const incomingInsights = Array.isArray(imported.insights) ? imported.insights : [];
+        const mergedInsights = [...currentInsights];
+
+        incomingInsights.forEach(item => {
+            const incomingText = (typeof item === 'string' ? item : (item.text || '')).trim().toLowerCase();
+            if (!incomingText) return;
+            const exists = mergedInsights.some(cur => {
+                const curText = (typeof cur === 'string' ? cur : (cur.text || '')).trim().toLowerCase();
+                return curText === incomingText;
+            });
+            if (!exists) {
+                mergedInsights.push(item);
+            }
+        });
 
       // 3. Assemble complete merged state
       state = {
@@ -2714,7 +2743,7 @@ closeBtn.onclick = async () => {
         // Keep active points if today's score is already tracked on laptop
         todayScore: Math.max(state.todayScore || 0, imported.todayScore || 0),
         yesterdayScore: Math.max(state.yesterdayScore || 0, imported.yesterdayScore || 0),
-        insights: Array.isArray(imported.insights) ? imported.insights : (state.insights || []),
+        insights: mergedInsights,
       };
 
       saveState();
