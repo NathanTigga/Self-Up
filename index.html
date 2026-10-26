@@ -2696,11 +2696,29 @@ closeBtn.onclick = async () => {
     try {
       const imported = JSON.parse(evt.target.result);
 
-      // 1. Merge the past dates/logs in `records`
-      const mergedRecords = {
-        ...(state.records || {}),
-        ...(imported.records || {})
-      };
+     // 1. Deep merge past dates/logs without losing photos or reflections
+        const existingRecords = state.records || {};
+        const incomingRecords = imported.records || {};
+        const mergedRecords = { ...existingRecords };
+
+        Object.keys(incomingRecords).forEach(dateKey => {
+            const currentDay = existingRecords[dateKey] || {};
+            const incomingDay = incomingRecords[dateKey] || {};
+
+            mergedRecords[dateKey] = {
+                ...currentDay,
+                ...incomingDay,
+                // Keep photo from either device
+                photo: incomingDay.photo || currentDay.photo || null,
+                // Keep reflection text if not present in the incoming file
+                reflection: incomingDay.reflection || currentDay.reflection || "",
+                // Merge completed task lists without duplicates
+                completedTasks: Array.from(new Set([
+                    ...(Array.isArray(currentDay.completedTasks) ? currentDay.completedTasks : []),
+                    ...(Array.isArray(incomingDay.completedTasks) ? incomingDay.completedTasks : [])
+                ]))
+            };
+        });
 
       // 2. Merge task templates without creating duplicates
       const currentTasks = Array.isArray(state.tasks) ? state.tasks : [];
