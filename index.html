@@ -1567,6 +1567,43 @@ body {
     margin-top: auto;
     padding-top: 12px;
 }
+/* Fix Calendar Cell Vertical Overlap & Stretching on Mobile */
+.calendar-grid {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    gap: 6px !important;
+}
+
+.calendar-cell {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    aspect-ratio: 1 !important; /* Forces each day cell to be a clean square */
+    min-height: unset !important;
+    height: auto !important;
+    padding: 4px !important;
+    border-radius: 8px !important;
+    box-sizing: border-box !important;
+    position: relative;
+}
+
+/* Ensure day number text stays crisp and centered */
+.calendar-cell span, 
+.calendar-cell .day-number {
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    line-height: 1;
+}
+
+/* Position points badge neatly at the bottom of the cell */
+.day-points-badge {
+    position: absolute !important;
+    bottom: 3px !important;
+    font-size: 8px !important;
+    padding: 1px 3px !important;
+    line-height: 1;
+}
   </style>
 </head>
 <body>
